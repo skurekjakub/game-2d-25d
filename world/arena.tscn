@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://world/arena.gd" id="1_arena"]
+[ext_resource type="PackedScene" path="res://player/player.tscn" id="2_player"]
+
+[sub_resource type="RectangleShape2D" id="WallShape_horizontal"]
+size = Vector2(1920, 20)
+
+[sub_resource type="RectangleShape2D" id="WallShape_vertical"]
+size = Vector2(20, 1080)
+
+[node name="Arena" type="Node2D"]
+script = ExtResource("1_arena")
+y_sort_enabled = true
+
+[node name="Floor" type="Polygon2D" parent="."]
+z_index = -1
+polygon = PackedVector2Array(-960, -540, 960, -540, 960, 540, -960, 540)
+color = Color(0.15, 0.15, 0.18, 1)
+
+[node name="Walls" type="StaticBody2D" parent="."]
+
+[node name="WallTop" type="CollisionShape2D" parent="Walls"]
+position = Vector2(0, -540)
+shape = SubResource("WallShape_horizontal")
+
+[node name="WallBottom" type="CollisionShape2D" parent="Walls"]
+position = Vector2(0, 540)
+shape = SubResource("WallShape_horizontal")
+
+[node name="WallLeft" type="CollisionShape2D" parent="Walls"]
+position = Vector2(-960, 0)
+shape = SubResource("WallShape_vertical")
+
+[node name="WallRight" type="CollisionShape2D" parent="Walls"]
+position = Vector2(960, 0)
+shape = SubResource("WallShape_vertical")
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+
+; Camera lives here rather than inside player.tscn so Arena owns viewport framing.
+; If a future scene wants the Player without this camera, just instance player.tscn.
+[node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(1.5, 1.5)
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0

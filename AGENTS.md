@@ -31,6 +31,8 @@ A 2D / 2.5D isometric (or top-down) game built in **Godot 4.x**. Desktop-first; 
 - `CLAUDE.md` — thin pointer to this file for Claude Code.
 - `docs/architecture.md` — universal architectural patterns + Godot addendum.
 - `docs/decisions/` — Architecture Decision Records.
+- `docs/design/` — design specs from the brainstorming skill (per-feature).
+- `docs/plans/` — implementation plans from the writing-plans skill (per-milestone).
 - `.claude/skills/` — vendored [Superpowers](https://github.com/obra/superpowers) skills (brainstorming, plans, TDD, review, debugging, research, etc.). See `.claude/skills/README.md`.
 - `.claude/agents/` — project-local subagents. Currently: `rubber-duk` (adversarial Godot code reviewer; invoke after any code change, before commit / merge / milestone close).
 

@@ -17,6 +17,10 @@ window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="keep"
 
+[autoload]
+
+EventBus="*res://bootstrap/event_bus.gd"
+
 [rendering]
 
 renderer/rendering_method="forward_plus"

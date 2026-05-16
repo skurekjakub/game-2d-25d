@@ -20,6 +20,7 @@ window/stretch/aspect="keep"
 [autoload]
 
 EventBus="*res://bootstrap/event_bus.gd"
+Game="*res://bootstrap/game.gd"
 
 [rendering]
 

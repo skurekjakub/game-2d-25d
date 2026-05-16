@@ -1,0 +1,19 @@
+# Normalize line endings for text-based Godot formats so .tscn / .gd diffs
+# stay legible across platforms (and for AI agents grepping them).
+* text=auto eol=lf
+
+*.gd      text eol=lf
+*.tscn    text eol=lf
+*.tres    text eol=lf
+*.cfg     text eol=lf
+*.import  text eol=lf
+
+# Binary assets
+*.png  binary
+*.jpg  binary
+*.webp binary
+*.ogg  binary
+*.wav  binary
+*.mp3  binary
+*.ttf  binary
+*.otf  binary

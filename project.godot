@@ -21,6 +21,7 @@ window/stretch/aspect="keep"
 
 EventBus="*res://bootstrap/event_bus.gd"
 Game="*res://bootstrap/game.gd"
+Debug="*res://bootstrap/debug.gd"
 
 [rendering]
 

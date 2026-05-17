@@ -67,9 +67,9 @@ func test_player_reemits_health_changed_on_damage() -> void:
 	add_child(player)
 	await get_tree().process_frame
 	monitor_signals(EventBus, false)
-	player._health.take_damage(15.0)
+	player.health.take_damage(15.0)
 	await assert_signal(EventBus).is_emitted(
-		"player_health_changed", [player._health.hp, player._health.max_hp]
+		"player_health_changed", [player.health.hp, player.health.max_hp]
 	)
 
 
@@ -78,8 +78,8 @@ func test_player_reemits_health_changed_on_max_hp_change() -> void:
 	add_child(player)
 	await get_tree().process_frame
 	monitor_signals(EventBus, false)
-	player._health.set_max_hp(150.0)
-	await assert_signal(EventBus).is_emitted("player_health_changed", [player._health.hp, 150.0])
+	player.health.set_max_hp(150.0)
+	await assert_signal(EventBus).is_emitted("player_health_changed", [player.health.hp, 150.0])
 
 
 func test_player_death_routes_through_game_end_run() -> void:
@@ -88,6 +88,6 @@ func test_player_death_routes_through_game_end_run() -> void:
 	add_child(player)
 	await get_tree().process_frame
 	monitor_signals(EventBus, false)
-	player._health.take_damage(99999.0)
+	player.health.take_damage(99999.0)
 	await assert_signal(EventBus).is_emitted("run_ended", [false])
 	assert_bool(Game.run_state.is_over).is_true()

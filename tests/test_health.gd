@@ -28,9 +28,11 @@ func test_take_damage_clamps_at_zero() -> void:
 func test_take_damage_emits_damaged_signal() -> void:
 	var hc := _make_health(100.0)
 	var captured := {amount = -1.0, new_hp = -1.0}
-	hc.damaged.connect(func(amt: float, new_hp: float) -> void:
-		captured.amount = amt
-		captured.new_hp = new_hp)
+	hc.damaged.connect(
+		func(amt: float, new_hp: float) -> void:
+			captured.amount = amt
+			captured.new_hp = new_hp
+	)
 	hc.take_damage(25.0)
 	assert_float(captured.amount).is_equal(25.0)
 	assert_float(captured.new_hp).is_equal(75.0)
@@ -59,9 +61,26 @@ func test_damaged_handler_calling_take_damage_does_not_double_emit_died() -> voi
 	var died_count := [0]
 	hc.died.connect(func(_killer: Node) -> void: died_count[0] += 1)
 	# Handler retaliates with overkill on first damaged emission.
-	hc.damaged.connect(func(_amt: float, _new_hp: float) -> void:
-		if hc.hp > 0.0:
-			hc.take_damage(200.0))
+	hc.damaged.connect(
+		func(_amt: float, _new_hp: float) -> void:
+			if hc.hp > 0.0:
+				hc.take_damage(200.0)
+	)
 	hc.take_damage(10.0)
 	assert_int(died_count[0]).is_equal(1)
 	assert_float(hc.hp).is_equal(0.0)
+
+
+func test_set_max_hp_updates_field() -> void:
+	var hc: HealthComponent = auto_free(HealthComponent.new())
+	hc.max_hp = 100.0
+	hc.set_max_hp(120.0)
+	assert_float(hc.max_hp).is_equal(120.0)
+
+
+func test_set_max_hp_emits_max_hp_changed() -> void:
+	var hc: HealthComponent = auto_free(HealthComponent.new())
+	hc.max_hp = 100.0
+	var monitor := monitor_signals(hc)
+	hc.set_max_hp(120.0)
+	await assert_signal(monitor).is_emitted("max_hp_changed", [120.0])

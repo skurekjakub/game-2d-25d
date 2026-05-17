@@ -4,6 +4,7 @@ extends Node
 # damaged.amount is the REQUESTED damage (pre-clamp). Callers needing absorbed damage compute hp_before - new_hp.
 signal damaged(amount: float, new_hp: float)
 signal died(killer: Node)
+signal max_hp_changed(new_max: float)
 
 @export var max_hp: float = 100.0
 var hp: float = 0.0
@@ -13,6 +14,11 @@ var _died_emitted: bool = false
 func _ready() -> void:
 	hp = max_hp
 	_died_emitted = false
+
+
+func set_max_hp(value: float) -> void:
+	max_hp = value
+	max_hp_changed.emit(max_hp)
 
 
 func take_damage(amount: float, source: Node = null) -> void:

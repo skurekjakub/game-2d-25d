@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Headless test runner. Optional arg: a test target (file or dir) relative to res://.
 # Examples:
-#   ./tests/run.sh                       # all tests
-#   ./tests/run.sh tests/test_smoke.gd   # one file
+#   ./tests/run.sh                                       # all tests
+#   ./tests/run.sh tests/smoke.gd                        # one file
+#   ./tests/run.sh tests/combat/stats/                   # one folder
 set -euo pipefail
 
 cd "$(dirname "$0")/.."

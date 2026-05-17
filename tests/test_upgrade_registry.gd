@@ -105,3 +105,57 @@ func test_apply_weapon_upgrade_is_noop_at_apply_time() -> void:
 	assert_float(hc.max_hp).is_equal(100.0)
 	assert_float(hc.hp).is_equal(100.0)
 	assert_float(player.get("speed")).is_equal(200.0)
+
+
+const KNOWN_WEAPON_IDS: Array[StringName] = [&"blaster", &"aura", &"orbital", &"spread"]
+
+
+func _player_with_weapons(weapon_ids: Array[StringName]) -> Node:
+	var stub := _PlayerStub.new()
+	add_child(auto_free(stub))
+	var host := WeaponHost.new()
+	host.name = "WeaponHost"
+	stub.add_child(host)
+	for wid in weapon_ids:
+		var d := WeaponData.new()
+		d.id = wid
+		host.weapons.append(WeaponInstance.new(d))
+	return stub
+
+
+func test_pool_gating_hides_acquire_for_owned_weapon() -> void:
+	var r := _registry_with_pool(
+		[
+			_make_upgrade(&"acquire_aura"),
+			_make_upgrade(&"max_hp_20"),
+		]
+	)
+	var player := _player_with_weapons([&"aura"] as Array[StringName])
+	var picks: Array = r.pick_random_3_for(player)
+	for u in picks:
+		assert_str(String(u.id)).is_not_equal("acquire_aura")
+
+
+func test_pool_gating_hides_weapon_upgrade_for_unowned_weapon() -> void:
+	var r := _registry_with_pool(
+		[
+			_make_upgrade(&"aura_damage_25"),
+			_make_upgrade(&"max_hp_20"),
+		]
+	)
+	var player := _player_with_weapons([&"blaster"] as Array[StringName])  # no aura
+	var picks: Array = r.pick_random_3_for(player)
+	for u in picks:
+		assert_str(String(u.id)).is_not_equal("aura_damage_25")
+
+
+func test_pool_gating_surfaces_upgrades_after_acquisition() -> void:
+	var r := _registry_with_pool(
+		[
+			_make_upgrade(&"aura_damage_25"),
+		]
+	)
+	var player := _player_with_weapons([&"aura"] as Array[StringName])
+	var picks: Array = r.pick_random_3_for(player)
+	assert_int(picks.size()).is_equal(1)
+	assert_str(String(picks[0].id)).is_equal("aura_damage_25")

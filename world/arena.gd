@@ -1,39 +1,32 @@
 class_name Arena
 extends Node2D
 
-const ENEMY_SCENE := preload("res://combat/enemies/enemy.tscn")
 const XP_GEM_SCENE := preload("res://world/xp_gem.tscn")
-const ENEMY_DATA := preload("res://combat/enemies/data/basic_walker.tres")
-const ENEMY_SPAWN_POSITION := Vector2(800, 400)
-const RESPAWN_DELAY: float = 2.0
-
-@onready var enemies_container: Node2D = $Enemies
+const BASIC_WALKER_DATA := preload("res://combat/enemies/data/basic_walker.tres")
 
 
 func _ready() -> void:
 	Game.start_run()
 	EventBus.enemy_killed.connect(_on_enemy_killed)
-	_spawn_test_enemy()
-
-
-func _spawn_test_enemy() -> void:
-	var enemy: Enemy = ENEMY_SCENE.instantiate()
-	enemy.data = ENEMY_DATA
-	enemy.global_position = ENEMY_SPAWN_POSITION
-	enemies_container.add_child(enemy)
+	EventBus.wave_completed.connect(_on_wave_completed)
 
 
 func _on_enemy_killed(_enemy: Node, at: Vector2) -> void:
 	_drop_xp_gem(at)
-	get_tree().create_timer(RESPAWN_DELAY).timeout.connect(_spawn_test_enemy)
 
 
 func _drop_xp_gem(at: Vector2) -> void:
 	var gem: XpGem = XP_GEM_SCENE.instantiate()
-	gem.value = ENEMY_DATA.xp_value
+	# enemy_data.xp_value is used as the gem value; for M1.2 all enemies are
+	# basic_walker so we read from that const. M1.3+ should read from the dead
+	# enemy's data ref carried in the enemy_killed payload (signal shape change).
+	gem.value = BASIC_WALKER_DATA.xp_value
 	gem.global_position = at
-	# _on_enemy_killed runs from within a projectile body_entered callback,
-	# so the physics server is mid-query-flush. Adding an Area2D to the tree
-	# right now changes monitoring state, which the server rejects. Defer the
-	# add to after the current physics step.
+	# Deferred because _on_enemy_killed runs inside a body_entered callback chain;
+	# adding an Area2D mid-physics-flush is rejected by the server.
+	# See project memory godot_signal_callback_addchild.md.
 	call_deferred("add_child", gem)
+
+
+func _on_wave_completed() -> void:
+	print("[Arena] Wave 1 complete — no further spawns. Existing enemies remain.")

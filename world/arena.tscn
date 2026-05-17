@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://world/arena.gd" id="1_arena"]
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="2_player"]
 [ext_resource type="Script" path="res://world/floor_grid.gd" id="3_floor_grid"]
+[ext_resource type="Script" path="res://world/spawner_director.gd" id="4_spawner_director"]
+[ext_resource type="Resource" path="res://world/data/wave_01_schedule.tres" id="5_wave_01_schedule"]
 
 [sub_resource type="RectangleShape2D" id="WallShape_horizontal"]
 size = Vector2(1920, 20)
@@ -45,6 +47,12 @@ shape = SubResource("WallShape_vertical")
 
 [node name="Enemies" type="Node2D" parent="."]
 y_sort_enabled = true
+
+[node name="SpawnerDirector" type="Node" parent="."]
+script = ExtResource("4_spawner_director")
+schedule = ExtResource("5_wave_01_schedule")
+enemies_container = NodePath("../Enemies")
+max_concurrent_enemies = 30
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 

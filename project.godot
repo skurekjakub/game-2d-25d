@@ -19,6 +19,7 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 EventBus="*res://bootstrap/event_bus.gd"
 Game="*res://bootstrap/game.gd"
 Debug="*res://bootstrap/debug.gd"
+UpgradeRegistry="*res://combat/upgrades/upgrade_registry.gd"
 
 [display]
 

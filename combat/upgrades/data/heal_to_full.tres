@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="UpgradeData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://combat/upgrades/upgrade_data.gd" id="1_upgrade_data"]
+
+[resource]
+script = ExtResource("1_upgrade_data")
+id = &"heal_to_full"
+display_name = "Heal to Full"
+description = "Restore HP to max. Max HP unchanged."
+weight = 1.0

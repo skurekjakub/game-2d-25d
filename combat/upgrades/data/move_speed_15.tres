@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="UpgradeData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://combat/upgrades/upgrade_data.gd" id="1_upgrade_data"]
+
+[resource]
+script = ExtResource("1_upgrade_data")
+id = &"move_speed_15"
+display_name = "+15% Move Speed"
+description = "Outrun the swarm a little better."
+weight = 1.0

@@ -71,9 +71,9 @@ func apply(upgrade: UpgradeData, player: Node) -> void:
 		&"heal_to_full":
 			if hc != null:
 				hc.set_hp(hc.max_hp)
-		&"weapon_damage_25":
+		&"blaster_damage_25":
 			pass
-		&"fire_rate_30":
+		&"blaster_fire_rate_30":
 			pass
 		_:
 			push_warning("UpgradeRegistry: no apply() branch for id=%s" % upgrade.id)

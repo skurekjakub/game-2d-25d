@@ -14,8 +14,6 @@ func _process(delta: float) -> void:
 
 func start_run() -> void:
 	run_state = RunState.new()
-	run_state.max_hp = 100.0
-	run_state.hp = run_state.max_hp
 	run_state.xp = 0
 	run_state.level = 1
 	run_state.time_elapsed = 0.0
@@ -36,8 +34,6 @@ func add_xp(amount: int) -> void:
 
 
 class RunState:
-	var hp: float
-	var max_hp: float
 	var xp: int
 	var level: int
 	var time_elapsed: float

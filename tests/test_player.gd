@@ -41,3 +41,21 @@ func test_died_emits_run_ended_false_and_disables_physics() -> void:
 	assert_bool(captured.fired).is_true()
 	assert_bool(captured.victory).is_false()
 	assert_bool(player.is_physics_processing()).is_false()
+
+
+func test_damaged_emits_damage_dealt_eventbus() -> void:
+	var scene := load("res://player/player.tscn") as PackedScene
+	var player: Node = auto_free(scene.instantiate())
+	add_child(player)
+	var captured := {fired = false, amount = -1.0, target_name = ""}
+	EventBus.damage_dealt.connect(
+		func(_source: Node, target: Node, amount: float) -> void:
+			captured.fired = true
+			captured.amount = amount
+			captured.target_name = target.name
+	)
+	var health: HealthComponent = player.get_node("HealthComponent")
+	health.take_damage(7.5)
+	assert_bool(captured.fired).is_true()
+	assert_float(captured.amount).is_equal(7.5)
+	assert_str(captured.target_name).is_equal("Player")

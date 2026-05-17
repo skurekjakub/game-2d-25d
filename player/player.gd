@@ -5,12 +5,19 @@ extends CharacterBody2D
 
 @onready var _health: HealthComponent = $HealthComponent
 @onready var _weapon_host: Node = $WeaponHost
+@onready var _visual: Polygon2D = $Visual
+
+const FLASH_COLOR := Color(1.0, 0.3, 0.3, 1.0)
+const FLASH_DURATION_SEC := 0.1
 
 var _is_dead: bool = false
+var _base_color: Color
 
 
 func _ready() -> void:
 	add_to_group("player")
+	_base_color = _visual.color
+	_health.damaged.connect(_on_damaged)
 	_health.died.connect(_on_died)
 
 
@@ -29,6 +36,11 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
 
+func _on_damaged(amount: float, _new_hp: float) -> void:
+	EventBus.damage_dealt.emit(null, self, amount)
+	_flash()
+
+
 func _on_died(_killer: Node) -> void:
 	if _is_dead:
 		return
@@ -38,3 +50,9 @@ func _on_died(_killer: Node) -> void:
 	_weapon_host.set_process(false)
 	_weapon_host.set_physics_process(false)
 	EventBus.run_ended.emit(false)
+
+
+func _flash() -> void:
+	_visual.color = FLASH_COLOR
+	var tween := create_tween()
+	tween.tween_property(_visual, "color", _base_color, FLASH_DURATION_SEC)

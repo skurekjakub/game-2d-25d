@@ -3,7 +3,7 @@ extends GdUnitTestSuite
 
 func _make_data(fire_rate: float = 1.0, p_range: float = 500.0) -> WeaponData:
 	var d := WeaponData.new()
-	d.id = &"test"
+	d.id = &"blaster"
 	d.base_damage = 10.0
 	d.fire_rate = fire_rate
 	d.range = p_range
@@ -90,7 +90,7 @@ func test_effective_damage_no_upgrades_returns_base() -> void:
 
 func test_effective_damage_one_upgrade_multiplies() -> void:
 	_reset_upgrades()
-	Game.run_state.upgrades_taken = [_upgrade(&"weapon_damage_25")]
+	Game.run_state.upgrades_taken = [_upgrade(&"blaster_damage_25")]
 	var w := WeaponInstance.new(_make_data())
 	assert_float(w.effective_damage()).is_equal_approx(12.5, 0.001)
 	_reset_upgrades()
@@ -99,9 +99,9 @@ func test_effective_damage_one_upgrade_multiplies() -> void:
 func test_effective_damage_compounds() -> void:
 	_reset_upgrades()
 	Game.run_state.upgrades_taken = [
-		_upgrade(&"weapon_damage_25"),
-		_upgrade(&"weapon_damage_25"),
-		_upgrade(&"weapon_damage_25"),
+		_upgrade(&"blaster_damage_25"),
+		_upgrade(&"blaster_damage_25"),
+		_upgrade(&"blaster_damage_25"),
 	]
 	var w := WeaponInstance.new(_make_data())
 	# 10 * 1.25^3 = 19.531...
@@ -120,8 +120,8 @@ func test_effective_damage_ignores_unrelated_upgrades() -> void:
 func test_effective_fire_rate_compounds() -> void:
 	_reset_upgrades()
 	Game.run_state.upgrades_taken = [
-		_upgrade(&"fire_rate_30"),
-		_upgrade(&"fire_rate_30"),
+		_upgrade(&"blaster_fire_rate_30"),
+		_upgrade(&"blaster_fire_rate_30"),
 	]
 	var w := WeaponInstance.new(_make_data(1.0))
 	# 1.0 * 1.30^2 = 1.69
@@ -132,10 +132,45 @@ func test_effective_fire_rate_compounds() -> void:
 func test_level_counts_weapon_affecting_upgrades() -> void:
 	_reset_upgrades()
 	Game.run_state.upgrades_taken = [
-		_upgrade(&"weapon_damage_25"),
-		_upgrade(&"fire_rate_30"),
+		_upgrade(&"blaster_damage_25"),
+		_upgrade(&"blaster_fire_rate_30"),
 		_upgrade(&"max_hp_20"),  # not weapon-affecting
 	]
 	var w := WeaponInstance.new(_make_data())
 	assert_int(w.level()).is_equal(3)  # 1 base + 2 weapon upgrades
+	_reset_upgrades()
+
+
+func test_effective_damage_per_weapon_id_isolation() -> void:
+	_reset_upgrades()
+	# Aura upgrade should not affect a Blaster instance.
+	Game.run_state.upgrades_taken = [_upgrade(&"aura_damage_25")]
+	var w := WeaponInstance.new(_make_data())  # id = "blaster"
+	assert_float(w.effective_damage()).is_equal(10.0)
+	_reset_upgrades()
+
+
+func test_count_upgrade_counts_matching_ids() -> void:
+	_reset_upgrades()
+	Game.run_state.upgrades_taken = [
+		_upgrade(&"orbital_count_plus_1"),
+		_upgrade(&"orbital_count_plus_1"),
+		_upgrade(&"aura_radius_25"),
+	]
+	var w := WeaponInstance.new(_make_data())
+	assert_int(w.count_upgrade(&"orbital_count_plus_1")).is_equal(2)
+	assert_int(w.count_upgrade(&"aura_radius_25")).is_equal(1)
+	assert_int(w.count_upgrade(&"spread_pellets_plus_1")).is_equal(0)
+	_reset_upgrades()
+
+
+func test_level_counts_per_weapon_prefix_only() -> void:
+	_reset_upgrades()
+	Game.run_state.upgrades_taken = [
+		_upgrade(&"blaster_damage_25"),
+		_upgrade(&"blaster_fire_rate_30"),
+		_upgrade(&"aura_damage_25"),
+	]
+	var w := WeaponInstance.new(_make_data())  # blaster
+	assert_int(w.level()).is_equal(3)  # 1 base + 2 blaster_*
 	_reset_upgrades()

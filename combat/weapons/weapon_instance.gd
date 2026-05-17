@@ -50,8 +50,9 @@ func effective_damage() -> float:
 	if data == null:
 		return 0.0
 	var d: float = data.base_damage
+	var damage_key := StringName("%s_damage_25" % String(data.id))
 	for upgrade: UpgradeData in Game.run_state.upgrades_taken:
-		if upgrade.id == &"weapon_damage_25":
+		if upgrade.id == damage_key:
 			d *= WEAPON_DAMAGE_MULTIPLIER
 	return d
 
@@ -60,15 +61,27 @@ func effective_fire_rate() -> float:
 	if data == null:
 		return 0.0
 	var r: float = data.fire_rate
+	var rate_key := StringName("%s_fire_rate_30" % String(data.id))
 	for upgrade: UpgradeData in Game.run_state.upgrades_taken:
-		if upgrade.id == &"fire_rate_30":
+		if upgrade.id == rate_key:
 			r *= FIRE_RATE_MULTIPLIER
 	return r
 
 
 func level() -> int:
+	if data == null:
+		return 1
 	var n: int = 1
+	var prefix := String(data.id) + "_"
 	for upgrade: UpgradeData in Game.run_state.upgrades_taken:
-		if upgrade.id == &"weapon_damage_25" or upgrade.id == &"fire_rate_30":
+		if String(upgrade.id).begins_with(prefix):
+			n += 1
+	return n
+
+
+func count_upgrade(id: StringName) -> int:
+	var n: int = 0
+	for upgrade: UpgradeData in Game.run_state.upgrades_taken:
+		if upgrade.id == id:
 			n += 1
 	return n

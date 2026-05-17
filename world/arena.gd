@@ -32,4 +32,8 @@ func _drop_xp_gem(at: Vector2) -> void:
 	var gem: XpGem = XP_GEM_SCENE.instantiate()
 	gem.value = ENEMY_DATA.xp_value
 	gem.global_position = at
-	add_child(gem)
+	# _on_enemy_killed runs from within a projectile body_entered callback,
+	# so the physics server is mid-query-flush. Adding an Area2D to the tree
+	# right now changes monitoring state, which the server rejects. Defer the
+	# add to after the current physics step.
+	call_deferred("add_child", gem)

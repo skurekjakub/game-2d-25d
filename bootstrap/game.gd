@@ -43,7 +43,7 @@ func add_xp(amount: int) -> void:
 	_maybe_emit_level_up()
 
 
-func _on_upgrade_applied(_upgrade: Resource) -> void:
+func _on_upgrade_applied(_upgrade: UpgradeData) -> void:
 	_maybe_emit_level_up()
 
 
@@ -62,5 +62,5 @@ class RunState:
 	var xp: int
 	var level: int
 	var time_elapsed: float
-	var upgrades_taken: Array[Resource] = []
+	var upgrades_taken: Array[UpgradeData] = []
 	var is_over: bool = false

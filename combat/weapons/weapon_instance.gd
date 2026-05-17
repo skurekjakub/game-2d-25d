@@ -1,6 +1,10 @@
 class_name WeaponInstance
 extends RefCounted
 
+# Defensive fallback when data.fire_rate is missing/invalid (<=0) — keeps the
+# weapon ticking at 1 Hz instead of busy-firing every frame or never firing.
+const INVALID_FIRE_RATE_FALLBACK_COOLDOWN_SEC: float = 1.0
+
 var data: WeaponData
 var cooldown_remaining: float = 0.0
 
@@ -34,6 +38,6 @@ func can_fire() -> bool:
 
 func reset_cooldown() -> void:
 	if data == null or data.fire_rate <= 0.0:
-		cooldown_remaining = 1.0
+		cooldown_remaining = INVALID_FIRE_RATE_FALLBACK_COOLDOWN_SEC
 		return
 	cooldown_remaining = 1.0 / data.fire_rate

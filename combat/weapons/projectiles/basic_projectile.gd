@@ -1,6 +1,8 @@
 class_name BasicProjectile
 extends Area2D
 
+const NEAR_ZERO_DISTANCE_PX: float = 0.001
+
 @export var speed: float = 400.0
 @export var lifetime: float = 2.0
 @export var damage: float = 10.0
@@ -17,7 +19,7 @@ func _ready() -> void:
 func set_target_position(target_pos: Vector2) -> void:
 	var here: Vector2 = global_position if is_inside_tree() else position
 	var diff: Vector2 = target_pos - here
-	if diff.length() <= 0.001:
+	if diff.length() <= NEAR_ZERO_DISTANCE_PX:
 		direction = Vector2.RIGHT
 		return
 	direction = diff.normalized()

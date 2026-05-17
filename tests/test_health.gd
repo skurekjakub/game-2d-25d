@@ -52,3 +52,16 @@ func test_take_damage_after_death_is_noop() -> void:
 	hc.take_damage(10.0)  # already dead
 	assert_int(died_count[0]).is_equal(1)
 	assert_float(hc.hp).is_equal(0.0)
+
+
+func test_damaged_handler_calling_take_damage_does_not_double_emit_died() -> void:
+	var hc := _make_health(100.0)
+	var died_count := [0]
+	hc.died.connect(func(_killer: Node) -> void: died_count[0] += 1)
+	# Handler retaliates with overkill on first damaged emission.
+	hc.damaged.connect(func(_amt: float, _new_hp: float) -> void:
+		if hc.hp > 0.0:
+			hc.take_damage(200.0))
+	hc.take_damage(10.0)
+	assert_int(died_count[0]).is_equal(1)
+	assert_float(hc.hp).is_equal(0.0)

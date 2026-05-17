@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://ui/hud.gd" id="1_hud"]
+[ext_resource type="PackedScene" path="res://ui/damage_meter_hud.tscn" id="2_dmeter"]
 
 [node name="Hud" type="Control"]
 script = ExtResource("1_hud")
@@ -70,3 +71,5 @@ offset_bottom = -36.0
 text = "0 fps"
 horizontal_alignment = 2
 mouse_filter = 2
+
+[node name="DamageMeterHud" parent="." instance=ExtResource("2_dmeter")]

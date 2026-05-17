@@ -8,17 +8,29 @@
 `feedback_oop_dry_soc`.
 
 **Architecture:** Two-bundle refactor.
-1. **DRY bundle** — extract 4 duplicated lookup patterns into 3 helper
-   classes + 1 test scaffold module. Mechanical; low risk.
+1. **DRY bundle** — `PlayerLocator.find(tree) -> Player` (typed);
+   promote `Player.weapon_host: WeaponHost` to public typed field
+   (replaces a separate `WeaponHostLocator` — collapses two duck
+   findings); add `Damageable.try_damage` helper; add `TestWorld`
+   scaffold that calls `set_physics_process(false)` on the host so
+   async tests don't trip on `Game.run_state`.
 2. **UpgradeEffect Strategy** — split `UpgradeRegistry.apply()`'s
    12-arm match block into a Strategy pattern. Each `UpgradeData.tres`
    carries an `effect: UpgradeEffect` sub-resource; `apply()` becomes
-   `upgrade.effect.execute(player)`. Medium risk; biggest payoff.
+   `upgrade.effect.execute(player)`. **Effect classes are typed per
+   stat** — `MaxHpBumpEffect`, `SpeedMultiplierEffect`,
+   `HealToFullEffect`, `WeaponAcquireEffect`, `NoopEffect`. Avoids
+   dynamic `player.get(field)` reflection (would violate the
+   static-typing rule).
+
+**Bundles ship in order.** Bundle 2's `WeaponAcquireEffect` consumes
+Bundle 1's `Player.weapon_host`, so the bundles are NOT parallelizable
+despite the "two bundle" framing.
 
 **Branch:** `refactor/pre-m1.6-soc` off `milestone-1.5`.
 
 **Execution preference:** rubber-duk after each bundle (2 checkpoints
-total). Total budget: ~5.5 h, ~9 new tests, ~180 → ~190 suite.
+total). Total budget: ~5.5 h, ~9 new tests, 155 → ~164 suite.
 
 **Required project memories:**
 - `feedback_no_archaeology_comments` — refactor diffs MUST be clean.
@@ -28,23 +40,48 @@ total). Total budget: ~5.5 h, ~9 new tests, ~180 → ~190 suite.
   new `UpgradeEffect` Resource hierarchy; serialize by `class_name` or
   script-path matters.
 
+## Revisions (post-duck-critique — supersede in-task code where they conflict)
+
+| Task | What changes | Why |
+|---|---|---|
+| Task 1 | `PlayerLocator.find` returns `Player`, not `Node`. Tests use the real `Player` type via `TestWorld.player_with_weapons` (Task 4) — no stub. | Static-typing rule (AGENTS.md + `feedback_oop_dry_soc`). Old plan widened return type to accommodate test stubs — circular. |
+| Task 2 | **Drop the `WeaponHostLocator` class entirely.** Instead, edit `player/player.gd`: change `@onready var _weapon_host: Node = $WeaponHost` to `@onready var weapon_host: WeaponHost = $WeaponHost` (public, typed). 5 call sites in `upgrade_registry.gd` (lines 79, 95, 149, 157, 165) become `(PlayerLocator.find(get_tree()) as Player).weapon_host` or `player.weapon_host` where `player: Player` is already in scope. | Per "one idiomatic way" (AGENTS.md): typed public child accessor on the parent that owns it beats a separate locator class hiding stringly-typed `get_node_or_null("WeaponHost")`. |
+| Task 3 | OrbitalBlade's pre-Damageable `is_in_group("enemies")` check stays (needed to gate the cooldown dict). Use `Damageable.ENEMY_GROUP` const so the magic string is centralized. | Group-check protects cooldown-dict pollution; `try_damage` returns false anyway but the gate is cheaper. |
+| Task 5 | **No `StatBumpEffect`.** Instead: `MaxHpBumpEffect(amount: float)` calls `hc.set_max_hp + set_hp`; `SpeedMultiplierEffect(multiplier: float)` calls `player.speed *= multiplier` with `player: Player` typed. Each effect is single-purpose, no `player.get(field)` reflection. | Static-typing rule. The original `StatBumpEffect{field, multiplier, additive}` had a stringly-typed dispatch and a `max_hp` special case that broke the abstraction. |
+| Task 7 | Extend `_make_upgrade(id, weight, effect)` (third optional arg). Rewrite 5 existing apply-tests (`test_apply_max_hp_20_*`, `test_apply_move_speed_15_*`, `test_apply_heal_to_full_*`, `test_apply_acquire_aura_*`, `test_apply_acquire_orbital_*`) to pass the right effect instance. | Without this fix, post-Task-7 commit lands with 5 RED tests (the old plan claimed they'd pass unchanged — wrong). |
+| Self-review grep | Use: `grep -rn 'get_nodes_in_group("player")' --include="*.gd" combat/ ui/ world/ player/` (balanced quotes). | Old grep had unbalanced quotes; would return 0 hits and falsely confirm migration. |
+
+---
+
+## Risk register
+
+| Risk | Mitigation |
+|---|---|
+| Existing `_make_upgrade(...)` apply-tests have `effect = null` post-Task 7 → 5 tests break (max_hp_20, move_speed_15, heal_to_full, 2 acquires) | Task 7 explicitly extends `_make_upgrade` to accept an optional `effect: UpgradeEffect` param, then rewrites the 5 apply-tests with the right effect. Inline test code spelled out in Task 7. |
+| TestWorld scaffold's bare `Node2D` player + WeaponHost child ticks `_physics_process` and reads `Game.run_state` during async tests | Scaffold calls `host.set_physics_process(false)` before returning; documented in helper docstring. |
+| Effect script paths (`combat/upgrades/effects/*.gd`) are load-bearing for 14 `.tres` ExtResource refs; rename = silent breakage | Post-refactor: directory layout is **frozen**. Any rename requires grep-replace across `combat/upgrades/data/*.tres`. Self-review step documents this. |
+| 14 `.tres` hand-edits at Task 6 = high typo blast radius | `test_every_upgrade_tres_has_effect` catches missing effects; manual read-back of one `.tres` after `--headless --import` verifies editor normalization. |
+| Re-tagging `milestone-1.5` to include refactor would be a destructive op (tag already pushed) | Tag refactor commits as `milestone-1.5.1` instead; merge decision deferred to Task 8 with user. |
+| `Player._on_damaged` also emits `damage_dealt(null, self, amount)` — NOT migrated by Damageable | Out of scope: player-receive damage is a different domain (enemy → player, no enemies group filter). Damageable.try_damage covers weapon → enemy only. Noted in Task 3. |
+
 ---
 
 ## File Structure
 
 **Bundle 1 (DRY):**
-- Create: `combat/lookups/player_locator.gd` — `static find(tree) -> Player`
-- Create: `combat/lookups/damageable.gd` — `static try_damage(body, amount, source) -> bool`
-- Create: `combat/lookups/weapon_host_locator.gd` — `static of(player) -> WeaponHost`
-- Create: `tests/scaffolds/test_world.gd` — `static player_with_weapons(case, ids)`
-- Modify: 7 source files + ~5 tests use the helpers.
+- Create: `combat/lookups/player_locator.gd` — `static find(tree) -> Player` (typed return — caller never casts).
+- Modify: `player/player.gd` — promote `_weapon_host: Node` → `weapon_host: WeaponHost` (public, typed). Replaces a separate `WeaponHostLocator` helper.
+- Create: `combat/lookups/damageable.gd` — `static try_damage(body, amount, source) -> bool` + `ENEMY_GROUP` const.
+- Create: `tests/scaffolds/test_world.gd` — `static player_with_weapons(case, ids)`; disables `_physics_process` on the spawned host.
+- Modify: 7 source files use the helpers.
 
 **Bundle 2 (UpgradeEffect):**
-- Create: `combat/upgrades/effects/upgrade_effect.gd` — abstract base.
-- Create: `combat/upgrades/effects/stat_bump_effect.gd`
+- Create: `combat/upgrades/effects/upgrade_effect.gd` — abstract base (no-op default).
+- Create: `combat/upgrades/effects/max_hp_bump_effect.gd` — `@export var amount: float`.
+- Create: `combat/upgrades/effects/speed_multiplier_effect.gd` — `@export var multiplier: float`.
 - Create: `combat/upgrades/effects/heal_to_full_effect.gd`
-- Create: `combat/upgrades/effects/weapon_acquire_effect.gd`
-- Create: `combat/upgrades/effects/noop_effect.gd`
+- Create: `combat/upgrades/effects/weapon_acquire_effect.gd` — `@export var weapon_data: WeaponData`.
+- Create: `combat/upgrades/effects/noop_effect.gd` — concrete type for inspector resource picker.
 - Modify: `combat/upgrades/upgrade_data.gd` — `@export var effect: UpgradeEffect`
 - Modify: `combat/upgrades/upgrade_registry.gd` — `apply()` collapses to one delegate.
 - Modify: all 14 upgrade `.tres` files — attach the right `effect` sub-resource.

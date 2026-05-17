@@ -6,6 +6,8 @@ extends CharacterBody2D
 @onready var health: HealthComponent = $HealthComponent
 @onready var movement: WalkTowardPlayerComponent = $WalkTowardPlayerComponent
 @onready var visual: Polygon2D = $Visual
+@onready var hurtbox: Area2D = $Hurtbox
+@onready var contact_damage: ContactDamageComponent = $ContactDamageComponent
 
 
 func _ready() -> void:
@@ -15,6 +17,7 @@ func _ready() -> void:
 		health.hp = data.max_hp
 		movement.speed = data.speed
 		visual.color = data.visual_color
+		contact_damage.damage = data.contact_damage
 	var players := get_tree().get_nodes_in_group("player")
 	if players.size() > 0:
 		movement.target = players[0]
@@ -31,5 +34,6 @@ func _physics_process(_delta: float) -> void:
 
 
 func _on_died(_killer: Node) -> void:
+	hurtbox.set_deferred("monitoring", false)
 	EventBus.enemy_killed.emit(self, global_position)
 	queue_free()

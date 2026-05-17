@@ -19,3 +19,9 @@ signal run_ended(victory: bool)
 # Spawner lifecycle
 signal spawn_phase_changed(phase_idx: int)
 signal wave_completed
+
+# Upgrade lifecycle (M1.4+); tightened to UpgradeData in Task 7
+signal upgrade_applied(upgrade: Resource)
+
+# Player HP re-emit — Player owns; HUD subscribes.
+signal player_health_changed(hp: float, max_hp: float)

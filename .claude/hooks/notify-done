@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Stop hook — fires when Claude finishes its overall response. Pings a desktop
+# notification (Linux only, via notify-send) so you don't have to keep the
+# terminal in focus. Silent no-op if notify-send isn't available.
+
+set -euo pipefail
+
+if command -v notify-send >/dev/null 2>&1; then
+    notify-send "Claude Code" "done" --urgency=low --expire-time=3000 2>/dev/null || true
+fi
+
+exit 0

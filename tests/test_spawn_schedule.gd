@@ -58,14 +58,14 @@ func test_phase_index_at_time_returns_minus_one_after_wave_end() -> void:
 	assert_int(s.phase_index_at_time(60.0)).is_equal(-1)
 
 
-func test_wave_01_schedule_loads_from_disk_with_two_phases() -> void:
+func test_wave_01_schedule_loads_from_disk_with_ten_phases() -> void:
 	var s: SpawnSchedule = load("res://world/data/wave_01_schedule.tres") as SpawnSchedule
 	assert_object(s).is_not_null()
-	assert_int(s.phases.size()).is_equal(2)
+	assert_int(s.phases.size()).is_equal(10)
 	assert_int(s.phases[0].starts_at_seconds).is_equal(0)
-	assert_int(s.phases[0].duration_seconds).is_equal(30)
-	assert_float(s.phases[0].spawn_rate_per_sec).is_equal(1.0)
-	assert_int(s.phases[1].starts_at_seconds).is_equal(30)
-	assert_int(s.phases[1].duration_seconds).is_equal(30)
-	assert_float(s.phases[1].spawn_rate_per_sec).is_equal(2.0)
-	assert_int(s.total_duration_seconds()).is_equal(60)
+	assert_int(s.phases[0].duration_seconds).is_equal(60)
+	assert_float(s.phases[0].spawn_rate_per_sec).is_equal(0.5)
+	assert_int(s.phases[9].starts_at_seconds).is_equal(540)
+	assert_int(s.phases[9].duration_seconds).is_equal(60)
+	assert_float(s.phases[9].spawn_rate_per_sec).is_equal(3.0)
+	assert_int(s.total_duration_seconds()).is_equal(600)

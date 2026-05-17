@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_spawn_phase")
-starts_at_seconds = 0
+starts_at_seconds = 300
 duration_seconds = 60
-spawn_rate_per_sec = 0.5
+spawn_rate_per_sec = 2.0
 enemy_data = ExtResource("2_walker")

@@ -1,9 +1,17 @@
-[gd_resource type="Resource" script_class="SpawnSchedule" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="SpawnSchedule" load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://world/spawn_schedule.gd" id="1_spawn_schedule"]
 [ext_resource type="Resource" path="res://world/data/wave_01_phase_a.tres" id="2_phase_a"]
 [ext_resource type="Resource" path="res://world/data/wave_01_phase_b.tres" id="3_phase_b"]
+[ext_resource type="Resource" path="res://world/data/wave_01_phase_c.tres" id="4_phase_c"]
+[ext_resource type="Resource" path="res://world/data/wave_01_phase_d.tres" id="5_phase_d"]
+[ext_resource type="Resource" path="res://world/data/wave_01_phase_e.tres" id="6_phase_e"]
+[ext_resource type="Resource" path="res://world/data/wave_01_phase_f.tres" id="7_phase_f"]
+[ext_resource type="Resource" path="res://world/data/wave_01_phase_g.tres" id="8_phase_g"]
+[ext_resource type="Resource" path="res://world/data/wave_01_phase_h.tres" id="9_phase_h"]
+[ext_resource type="Resource" path="res://world/data/wave_01_phase_i.tres" id="10_phase_i"]
+[ext_resource type="Resource" path="res://world/data/wave_01_phase_j.tres" id="11_phase_j"]
 
 [resource]
 script = ExtResource("1_spawn_schedule")
-phases = Array[Resource]([ExtResource("2_phase_a"), ExtResource("3_phase_b")])
+phases = Array[Resource]([ExtResource("2_phase_a"), ExtResource("3_phase_b"), ExtResource("4_phase_c"), ExtResource("5_phase_d"), ExtResource("6_phase_e"), ExtResource("7_phase_f"), ExtResource("8_phase_g"), ExtResource("9_phase_h"), ExtResource("10_phase_i"), ExtResource("11_phase_j")])

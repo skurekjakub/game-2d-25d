@@ -21,6 +21,7 @@ Game="*res://bootstrap/game.gd"
 Debug="*res://bootstrap/debug.gd"
 UpgradeRegistry="*res://combat/upgrades/upgrade_registry.gd"
 DamageAggregator="*res://bootstrap/damage_aggregator.gd"
+MCPRuntime="*uid://ca86h2a3ehbc2"
 
 [display]
 

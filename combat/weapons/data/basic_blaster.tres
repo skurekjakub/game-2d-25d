@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://combat/weapons/weapon_data.gd" id="1_weapondata"]
+
+[resource]
+script = ExtResource("1_weapondata")
+id = &"basic_blaster"
+display_name = "Basic Blaster"
+base_damage = 10.0
+fire_rate = 1.0
+range = 600.0
+targeting = 0

@@ -5,7 +5,7 @@ var time_scale: float = 1.0
 var show_overlay: bool = false
 var log_events: bool = true
 # damage_dealt fires per-hit and floods the console; off by default.
-var log_damage: bool = false
+var log_damage: bool = true
 
 
 func _ready() -> void:
@@ -51,43 +51,52 @@ func _log(msg: String) -> void:
 	print("[EventBus] %s" % msg)
 
 
+static func _label(n: Node) -> String:
+	if n == null:
+		return "<null>"
+	var nm := str(n.name)
+	if nm.begins_with("@"):
+		return n.get_class()
+	return nm
+
+
 func _on_run_started() -> void:
-	_log("run_started")
+	_log("run_started()")
 
 
 func _on_run_ended(victory: bool) -> void:
-	_log("run_ended victory=%s" % victory)
+	_log("run_ended(victory=%s)" % victory)
 
 
 func _on_spawn_phase_changed(phase_idx: int) -> void:
-	_log("spawn_phase_changed → idx=%d" % phase_idx)
+	_log("spawn_phase_changed(idx=%d)" % phase_idx)
 
 
 func _on_wave_completed() -> void:
-	_log("wave_completed")
+	_log("wave_completed()")
 
 
 func _on_level_up(new_level: int) -> void:
-	_log("level_up → %d" % new_level)
+	_log("level_up(level=%d)" % new_level)
 
 
 func _on_boss_spawned(boss: Node) -> void:
-	_log("boss_spawned %s" % boss.name)
+	_log("boss_spawned(name=%s)" % _label(boss))
 
 
 func _on_boss_killed(boss: Node) -> void:
-	_log("boss_killed %s" % boss.name)
+	_log("boss_killed(name=%s)" % _label(boss))
 
 
 func _on_xp_gained(amount: int) -> void:
-	_log("xp_gained +%d" % amount)
+	_log("xp_gained(amount=%d)" % amount)
 
 
 func _on_enemy_killed(enemy: Node, pos: Vector2) -> void:
-	_log("enemy_killed %s at %s" % [enemy.name, pos])
+	_log("enemy_killed(name=%s, pos=(%.1f, %.1f))" % [_label(enemy), pos.x, pos.y])
 
 
 func _on_damage_dealt(_source: Node, target: Node, amount: float) -> void:
 	if not log_damage:
 		return
-	_log("damage_dealt → %s -%.1f" % [target.name, amount])
+	_log("damage_dealt(target=%s, amount=%.1f)" % [_label(target), amount])

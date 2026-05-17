@@ -25,6 +25,7 @@ var enemies_container: Node2D
 var spawn_budget: float = 0.0
 var _last_phase_index: int = -1
 var _wave_ended_emitted: bool = false
+var _spawn_counter: int = 0
 
 
 func _ready() -> void:
@@ -106,8 +107,10 @@ func _try_spawn_one(phase: SpawnPhase) -> void:
 	var angle: float = randf() * TAU
 	var spawn_pos: Vector2 = compute_spawn_position(player_pos, radius, angle)
 	spawn_pos = clamp_spawn_to_bounds(spawn_pos, spawn_bounds)
+	_spawn_counter += 1
 	var enemy: Enemy = ENEMY_SCENE.instantiate()
 	enemy.data = phase.enemy_data
+	enemy.name = "%s_%d" % [String(phase.enemy_data.id), _spawn_counter]
 	enemy.global_position = spawn_pos
 	enemies_container.add_child(enemy)
 

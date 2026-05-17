@@ -24,3 +24,13 @@ func test_event_bus_has_level_up_signal() -> void:
 func test_event_bus_has_boss_spawned_signal() -> void:
 	var bus: Node = auto_free(load("res://bootstrap/event_bus.gd").new())
 	assert_bool(bus.has_signal("boss_spawned")).is_true()
+
+
+func test_event_bus_has_spawn_phase_changed_signal() -> void:
+	var bus: Node = auto_free(load("res://bootstrap/event_bus.gd").new())
+	assert_bool(bus.has_signal("spawn_phase_changed")).is_true()
+
+
+func test_event_bus_has_wave_complete_signal() -> void:
+	var bus: Node = auto_free(load("res://bootstrap/event_bus.gd").new())
+	assert_bool(bus.has_signal("wave_complete")).is_true()

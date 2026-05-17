@@ -54,3 +54,25 @@ func test_physics_process_no_ops_when_run_is_over() -> void:
 	host._physics_process(0.5)
 	# Cooldown unchanged → weapon.tick() was not called.
 	assert_float(weapon.cooldown_remaining).is_equal_approx(before, 0.0001)
+
+
+func test_basic_projectile_has_weapon_id_field() -> void:
+	var proj := preload("res://combat/weapons/projectiles/basic_projectile.tscn").instantiate()
+	auto_free(proj)
+	assert_bool("weapon_id" in proj).is_true()
+
+
+func test_spawned_projectile_carries_weapon_id() -> void:
+	Game.start_run()
+	var host := _make_host()
+	host.add_weapon(_make_blaster_data())
+	var weapon: WeaponInstance = host.weapons[0]
+	host._spawn_single(weapon, Vector2(100, 0))
+	var found: BasicProjectile = null
+	for child: Node in get_children():
+		if child is BasicProjectile:
+			found = child
+			break
+	assert_object(found).is_not_null()
+	assert_str(String(found.weapon_id)).is_equal("blaster")
+	auto_free(found)

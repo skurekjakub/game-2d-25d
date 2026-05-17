@@ -8,6 +8,7 @@ const NEAR_ZERO_DISTANCE_PX: float = 0.001
 @export var damage: float = 10.0
 
 var direction: Vector2 = Vector2.ZERO
+var weapon_id: StringName = &""
 var _age: float = 0.0
 
 

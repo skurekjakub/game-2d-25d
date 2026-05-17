@@ -90,6 +90,7 @@ func _spawn_single(weapon: WeaponInstance, aim_point: Vector2) -> void:
 		projectile.set_target_position(aim_point)
 	if "damage" in projectile:
 		projectile.damage = weapon.effective_damage()
+	projectile.weapon_id = weapon.data.id
 	# Projectiles live as siblings of the player (in the Arena), so they don't
 	# follow the player.
 	_shooter.get_parent().add_child(projectile)

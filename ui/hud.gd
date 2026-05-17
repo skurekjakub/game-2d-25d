@@ -8,8 +8,6 @@ extends Control
 @onready var _weapon_list: VBoxContainer = $WeaponList
 @onready var _fps_label: Label = $FpsLabel
 
-var _current_level: int = 1
-
 
 func _ready() -> void:
 	EventBus.run_started.connect(_on_run_started)
@@ -50,7 +48,6 @@ func _on_xp_gained(_amount: int) -> void:
 
 
 func _on_level_up(new_level: int) -> void:
-	_current_level = new_level
 	_level_label.text = "Lv %d" % new_level
 	if Game.run_state != null:
 		_xp_bar.max_value = float(Game.xp_needed(Game.run_state.level))
@@ -63,7 +60,6 @@ func _on_upgrade_applied(_upgrade: UpgradeData) -> void:
 
 func _apply_reset_state() -> void:
 	modulate = Color.WHITE
-	_current_level = 1
 	_level_label.text = "Lv 1"
 	_xp_bar.value = 0.0
 	if Game.run_state != null:
@@ -76,7 +72,11 @@ func _apply_reset_state() -> void:
 
 
 func _refresh_weapon_list() -> void:
+	# remove_child first so the new labels don't briefly stack with the old.
+	# queue_free is end-of-frame; bare queue_free leaves the old labels in the
+	# VBox layout for one frame, doubling the visible list (Godot #99239).
 	for child in _weapon_list.get_children():
+		_weapon_list.remove_child(child)
 		child.queue_free()
 	var players := get_tree().get_nodes_in_group("player")
 	if players.is_empty():

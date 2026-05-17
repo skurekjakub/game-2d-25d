@@ -24,3 +24,20 @@ func test_player_scene_loads_and_instantiates() -> void:
 	var node: Node = auto_free(scene.instantiate())
 	assert_object(node).is_not_null()
 	assert_str(node.name).is_equal("Player")
+
+
+func test_died_emits_run_ended_false_and_disables_physics() -> void:
+	var scene := load("res://player/player.tscn") as PackedScene
+	var player: Node = auto_free(scene.instantiate())
+	add_child(player)
+	var captured := {fired = false, victory = true}
+	EventBus.run_ended.connect(
+		func(victory: bool) -> void:
+			captured.fired = true
+			captured.victory = victory
+	)
+	var health: HealthComponent = player.get_node("HealthComponent")
+	health.take_damage(9999.0)
+	assert_bool(captured.fired).is_true()
+	assert_bool(captured.victory).is_false()
+	assert_bool(player.is_physics_processing()).is_false()

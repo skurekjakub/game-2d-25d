@@ -48,6 +48,8 @@ func _physics_process(delta: float) -> void:
 func _try_fire(weapon: WeaponInstance) -> void:
 	if weapon.data == null or weapon.data.projectile_scene == null:
 		return
+	# Passing Array[Node] from get_nodes_in_group directly; find_nearest_target
+	# does its own `is Node2D` filter. See M1.1 Task 6 rubber-duk notes.
 	var enemies := get_tree().get_nodes_in_group("enemies")
 	var target := WeaponInstance.find_nearest_target(
 		_shooter.global_position, enemies, weapon.data.range
@@ -85,4 +87,6 @@ func _spawn_single(weapon: WeaponInstance, aim_point: Vector2) -> void:
 		projectile.set_target_position(aim_point)
 	if "damage" in projectile:
 		projectile.damage = weapon.effective_damage()
+	# Projectiles live as siblings of the player (in the Arena), so they don't
+	# follow the player.
 	_shooter.get_parent().add_child(projectile)

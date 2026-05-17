@@ -3,6 +3,9 @@ extends Resource
 
 enum Targeting { NEAREST }
 
+# Weapon ids MUST NOT be prefixes of other weapon ids — WeaponInstance.level()
+# prefix-matches upgrade keys to count owned levels, so `blaster` + `blaster_v2`
+# would double-count.
 @export var id: StringName
 @export var display_name: String
 @export var base_damage: float = 10.0

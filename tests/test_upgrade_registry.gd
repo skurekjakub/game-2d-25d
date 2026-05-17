@@ -100,8 +100,8 @@ func test_apply_weapon_upgrade_is_noop_at_apply_time() -> void:
 	hc.max_hp = 100.0
 	hc.hp = 100.0
 	var player := _make_player_with_hc(200.0, hc)
-	r.apply(_make_upgrade(&"weapon_damage_25"), player)
-	r.apply(_make_upgrade(&"fire_rate_30"), player)
+	r.apply(_make_upgrade(&"blaster_damage_25"), player)
+	r.apply(_make_upgrade(&"blaster_fire_rate_30"), player)
 	assert_float(hc.max_hp).is_equal(100.0)
 	assert_float(hc.hp).is_equal(100.0)
 	assert_float(player.get("speed")).is_equal(200.0)

@@ -30,6 +30,12 @@ window/stretch/mode="canvas_items"
 
 enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
 
+[layer_names]
+
+2d_physics/layer_1="environment"
+2d_physics/layer_2="player"
+2d_physics/layer_3="enemies"
+
 [input]
 
 move_left={

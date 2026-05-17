@@ -22,7 +22,7 @@ func test_pickup_credits_xp_and_frees_gem_on_player_overlap() -> void:
 	var gem: XpGem = load("res://world/xp_gem.tscn").instantiate()
 	gem.value = 3
 	var player: CharacterBody2D = auto_free(CharacterBody2D.new())
-	player.collision_layer = 2  # matches real Player; XpGem hurtbox scans layer 2.
+	player.collision_layer = CollisionLayers.PLAYER
 	var shape := CollisionShape2D.new()
 	shape.shape = CircleShape2D.new()
 	(shape.shape as CircleShape2D).radius = 8.0

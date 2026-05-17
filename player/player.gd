@@ -2,10 +2,12 @@ class_name Player
 extends CharacterBody2D
 
 @export var speed: float = 200.0
+@export var contact_slow_multiplier: float = 0.5
 
 @onready var _health: HealthComponent = $HealthComponent
 @onready var _weapon_host: Node = $WeaponHost
 @onready var _visual: Polygon2D = $Visual
+@onready var _slow_zone: Area2D = $SlowZone
 
 const FLASH_COLOR := Color(1.0, 0.3, 0.3, 1.0)
 const FLASH_DURATION_SEC := 0.1
@@ -33,7 +35,10 @@ func _physics_process(_delta: float) -> void:
 		Input.get_axis("move_left", "move_right"),
 		Input.get_axis("move_up", "move_down"),
 	)
-	velocity = compute_velocity(input_vector, speed)
+	var effective_speed := speed
+	if _slow_zone.has_overlapping_bodies():
+		effective_speed *= contact_slow_multiplier
+	velocity = compute_velocity(input_vector, effective_speed)
 	move_and_slide()
 
 

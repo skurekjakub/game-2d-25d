@@ -35,4 +35,5 @@ func owned_tick(delta: float) -> void:
 		if hc == null:
 			continue
 		hc.take_damage(damage, self)
+		EventBus.damage_dealt.emit(self, body, damage)
 		_hit_cooldowns[key] = RE_HIT_COOLDOWN_SEC

@@ -6,6 +6,7 @@ const RADIUS_UPGRADE_MULTIPLIER: float = 1.25
 const TICK_INTERVAL_SEC: float = 0.5
 
 @onready var _shape: CollisionShape2D = $Shape
+@onready var _visual: Polygon2D = $Visual
 
 var instance: WeaponInstance
 var _tick_remaining: float = TICK_INTERVAL_SEC
@@ -42,6 +43,10 @@ func _apply_radius() -> void:
 		var bonus: int = instance.count_upgrade(&"aura_radius_25")
 		r *= pow(RADIUS_UPGRADE_MULTIPLIER, bonus)
 	(_shape.shape as CircleShape2D).radius = r
+	# Visual polygon is hard-coded at BASE_RADIUS in the .tscn; scale the node
+	# to track the live collision radius so the blue ring matches damage reach.
+	if _visual != null:
+		_visual.scale = Vector2.ONE * (r / BASE_RADIUS)
 
 
 func _apply_tick_damage() -> void:
@@ -54,3 +59,4 @@ func _apply_tick_damage() -> void:
 		var hc := body.get_node_or_null("HealthComponent") as HealthComponent
 		if hc != null:
 			hc.take_damage(dmg, self)
+			EventBus.damage_dealt.emit(self, body, dmg)

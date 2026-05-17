@@ -10,9 +10,13 @@ const ENEMY_SCENE := preload("res://combat/enemies/enemy.tscn")
 const SPAWN_MARGIN: float = 64.0   # extra distance beyond the camera viewport diagonal
 
 @export var schedule: SpawnSchedule
-@export var enemies_container: Node2D
+# Node-typed @exports don't auto-resolve from NodePath in .tscn in Godot 4.6
+# (proposal godot-proposals#1048 not merged for non-Resource Node types).
+# Use NodePath + manual resolve in _ready; tests set `enemies_container` directly.
+@export var enemies_container_path: NodePath
 @export var max_concurrent_enemies: int = 30
 
+var enemies_container: Node2D
 var spawn_budget: float = 0.0
 var _last_phase_index: int = -1
 var _wave_ended_emitted: bool = false
@@ -21,6 +25,8 @@ var _wave_ended_emitted: bool = false
 func _ready() -> void:
 	_last_phase_index = -1
 	_wave_ended_emitted = false
+	if enemies_container == null and not enemies_container_path.is_empty():
+		enemies_container = get_node_or_null(enemies_container_path) as Node2D
 
 
 func _process(delta: float) -> void:

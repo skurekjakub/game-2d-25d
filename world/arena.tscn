@@ -51,7 +51,7 @@ y_sort_enabled = true
 [node name="SpawnerDirector" type="Node" parent="."]
 script = ExtResource("4_spawner_director")
 schedule = ExtResource("5_wave_01_schedule")
-enemies_container = NodePath("../Enemies")
+enemies_container_path = NodePath("../Enemies")
 max_concurrent_enemies = 30
 
 [node name="Player" parent="." instance=ExtResource("2_player")]

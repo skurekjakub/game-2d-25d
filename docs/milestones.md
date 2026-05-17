@@ -11,21 +11,15 @@ A snapshot of where the project is and what's planned. Tagged milestones are pus
 | `milestone-1.2` | Spawner | SpawnSchedule / SpawnPhase resources, SpawnerDirector, enemy concurrency cap, XP gems on enemy death, basic XP bar. |
 | `milestone-1.3` | Player HP + slow-zone | ContactDamageComponent on enemies, Player HP via HealthComponent, contact-slow Area2D, death routes through (then-direct) `EventBus.run_ended`. Palette + CollisionLayers conventions introduced. |
 | `milestone-1.4` | HUD + level-up modal | Full 5-element HUD (HP/XP/level/timer/weapons/FPS), 3-card level-up modal, 5-upgrade pool, `RunState.upgrades_taken`, pure-functional upgrade read path (ADR-0003), central `Game.end_run` guard (ADR-0004), signal-driven HUD (ADR-0005), 10-phase × 60s schedule (10-min runs), `hp_changed` / `set_hp` symmetric signal/setter pattern. |
-
-## In progress
-
-| Branch | Topic | Status |
-|---|---|---|
-| `feature/milestone-1.5-weapon-variety` | Weapon variety | Design + plan complete. 10 tasks, 3 rubber-duk checkpoints. Adds 3 new weapons (Spread, Aura, Orbital) acquired via the modal pool, per-weapon upgrade ids, tiered pool gating. Weapon-scene-per-kind architecture (each weapon's behavior in its own scene). |
-
-Plan: `docs/plans/2026-05-17-milestone-1.5-weapon-variety.md`. Design: `docs/design/2026-05-17-milestone-1.5-weapon-variety.md`.
+| `milestone-1.5` | Weapon variety | 3 new weapons (Spread, Aura, Orbital) acquired via modal pool, per-weapon upgrade ids, tiered pool gating, weapon-scene-per-kind architecture. |
+| `milestone-1.6` | Damage meter | Live top-5 damage meter (4 Hz polled), end-of-run summary panel with per-weapon share-of-total bars. `RunStats` RefCounted state + `DamageAggregator` autoload (sole writer, Observer), `DamageSourceResolver` projectile→weapon attribution, `damage_dealt` EventBus contract with null-source for player contact damage, `NumberFormat` + `WeaponDisplayLookup` shared widgets. |
 
 ## Planned
 
 | Target | Topic | Notes |
 |---|---|---|
-| M1.6 | Enemy variety | 3-4 enemy kinds (ranged, fast, tough) + weighted SpawnPhase enemy mix. Revisits `max_concurrent_enemies` cap (currently 30, throttles late-phase 3.0/s spawn rate — see M1.5 risk register). |
-| M1.7 | Boss wave | Single tough enemy at ~3-min mark with own HP bar via existing `player_health_changed` signal pattern reused on a boss-health bus. |
+| M1.7 | Enemy variety | 3-4 enemy kinds (ranged, fast, tough) + weighted SpawnPhase enemy mix. Revisits `max_concurrent_enemies` cap (currently 30, throttles late-phase 3.0/s spawn rate — see M1.5 risk register). |
+| M1.8 | Boss wave | Single tough enemy at ~3-min mark with own HP bar via existing `player_health_changed` signal pattern reused on a boss-health bus. |
 | M2.0 | Menus + restart | Main menu, game-over screen, restart loop. First "real" UI surface beyond the HUD/modal. Driven by `EventBus.run_ended` which is already centrally guarded (ADR-0004). |
 
 ## Conventions for adding milestones

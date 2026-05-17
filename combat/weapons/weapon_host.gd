@@ -35,6 +35,11 @@ func owned_weapon_ids() -> Array[StringName]:
 func _physics_process(delta: float) -> void:
 	if _shooter == null:
 		return
+	# Honour the canonical run-over flag (ADR-0004) so scene-owned weapons
+	# (Aura, Orbital) stop damaging enemies after victory. Death-path also
+	# pauses physics_process directly via Player._on_died.
+	if Game.run_state != null and Game.run_state.is_over:
+		return
 	for weapon: WeaponInstance in weapons:
 		if weapon.node != null and weapon.node.has_method("_owned_tick"):
 			weapon.node._owned_tick(delta)

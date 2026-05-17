@@ -41,3 +41,16 @@ func test_add_weapon_with_scene_spawns_as_player_child() -> void:
 	var data := _make_blaster_data()
 	host.add_weapon(data)
 	assert_object(host.weapons[0].node).is_null()
+
+
+func test_physics_process_no_ops_when_run_is_over() -> void:
+	Game.start_run()
+	var host := _make_host()
+	host.add_weapon(_make_blaster_data())
+	var weapon: WeaponInstance = host.weapons[0]
+	weapon.reset_cooldown()
+	var before: float = weapon.cooldown_remaining
+	Game.end_run(false)  # flips run_state.is_over = true
+	host._physics_process(0.5)
+	# Cooldown unchanged → weapon.tick() was not called.
+	assert_float(weapon.cooldown_remaining).is_equal_approx(before, 0.0001)

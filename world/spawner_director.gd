@@ -15,6 +15,11 @@ const SPAWN_MARGIN: float = 64.0   # extra distance beyond the camera viewport d
 # Use NodePath + manual resolve in _ready; tests set `enemies_container` directly.
 @export var enemies_container_path: NodePath
 @export var max_concurrent_enemies: int = 30
+# Spawn positions get clamped to this rect (arena interior). Off-camera-ring
+# spawns at the top/bottom can otherwise land outside walls — enemies pile up
+# against the wall and never reach the player. Default is effectively unbounded
+# so tests / standalone uses don't accidentally trap spawns at the origin.
+@export var spawn_bounds: Rect2 = Rect2(-100000, -100000, 200000, 200000)
 
 var enemies_container: Node2D
 var spawn_budget: float = 0.0
@@ -48,6 +53,14 @@ func _process(delta: float) -> void:
 # Pure math: spawn position on a circle around player.
 static func compute_spawn_position(player_pos: Vector2, radius: float, angle_rad: float) -> Vector2:
 	return player_pos + Vector2(cos(angle_rad), sin(angle_rad)) * radius
+
+
+# Pure math: clamp a candidate spawn position to a rectangular bounds.
+# Used when the off-camera ring would land outside the playable arena.
+static func clamp_spawn_to_bounds(pos: Vector2, bounds: Rect2) -> Vector2:
+	return Vector2(
+		clamp(pos.x, bounds.position.x, bounds.end.x),
+		clamp(pos.y, bounds.position.y, bounds.end.y))
 
 
 func accumulate_budget(delta: float, rate_per_sec: float) -> void:
@@ -88,6 +101,7 @@ func _try_spawn_one(phase: SpawnPhase) -> void:
 	var radius: float = _spawn_radius()
 	var angle: float = randf() * TAU
 	var spawn_pos: Vector2 = compute_spawn_position(player_pos, radius, angle)
+	spawn_pos = clamp_spawn_to_bounds(spawn_pos, spawn_bounds)
 	var enemy: Enemy = ENEMY_SCENE.instantiate()
 	enemy.data = phase.enemy_data
 	enemy.global_position = spawn_pos

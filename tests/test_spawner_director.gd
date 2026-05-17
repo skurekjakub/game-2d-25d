@@ -49,6 +49,28 @@ func test_compute_spawn_position_distance_to_player_equals_radius() -> void:
 		assert_float(pos.distance_to(player_pos)).is_equal_approx(radius, 0.01)
 
 
+func test_clamp_spawn_to_bounds_passes_through_inside_points() -> void:
+	var bounds := Rect2(-880, -460, 1760, 920)
+	var inside := Vector2(100, 200)
+	assert_vector(SpawnerDirector.clamp_spawn_to_bounds(inside, bounds)).is_equal(inside)
+
+
+func test_clamp_spawn_to_bounds_clamps_outside_y() -> void:
+	# Top-of-ring spawn at (0, 798) exceeds arena half-height (460) — should clamp.
+	var bounds := Rect2(-880, -460, 1760, 920)
+	var clamped := SpawnerDirector.clamp_spawn_to_bounds(Vector2(0, 798), bounds)
+	assert_float(clamped.x).is_equal(0.0)
+	assert_float(clamped.y).is_equal(460.0)
+
+
+func test_clamp_spawn_to_bounds_clamps_outside_x_and_y() -> void:
+	# Far corner spawn — both axes clamp independently.
+	var bounds := Rect2(-880, -460, 1760, 920)
+	var clamped := SpawnerDirector.clamp_spawn_to_bounds(Vector2(2000, -1000), bounds)
+	assert_float(clamped.x).is_equal(880.0)
+	assert_float(clamped.y).is_equal(-460.0)
+
+
 # Budget accumulation
 
 func test_starts_with_zero_spawn_budget() -> void:

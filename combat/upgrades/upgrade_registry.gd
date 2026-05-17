@@ -15,19 +15,16 @@ func _ready() -> void:
 
 
 func _load_pool() -> Array[UpgradeData]:
+	# ResourceLoader.list_directory is remap-aware: in an exported PCK, `.tres`
+	# files are converted to binary `.res` and DirAccess scans return zero
+	# matches. See Godot docs class_diraccess.rst:92.
 	var loaded: Array[UpgradeData] = []
-	var dir := DirAccess.open(DATA_DIR)
-	if dir == null:
-		return loaded
-	dir.list_dir_begin()
-	var name := dir.get_next()
-	while name != "":
-		if name.ends_with(".tres"):
-			var res := load("%s/%s" % [DATA_DIR, name])
-			if res is UpgradeData:
-				loaded.append(res)
-		name = dir.get_next()
-	dir.list_dir_end()
+	for entry in ResourceLoader.list_directory(DATA_DIR):
+		if not (entry.ends_with(".tres") or entry.ends_with(".res")):
+			continue
+		var res := load("%s/%s" % [DATA_DIR, entry])
+		if res is UpgradeData:
+			loaded.append(res)
 	return loaded
 
 
@@ -80,3 +77,5 @@ func apply(upgrade: UpgradeData, player: Node) -> void:
 			pass
 		&"fire_rate_30":
 			pass
+		_:
+			push_warning("UpgradeRegistry: no apply() branch for id=%s" % upgrade.id)

@@ -4,6 +4,8 @@ extends RefCounted
 # Defensive fallback when data.fire_rate is missing/invalid (<=0) — keeps the
 # weapon ticking at 1 Hz instead of busy-firing every frame or never firing.
 const INVALID_FIRE_RATE_FALLBACK_COOLDOWN_SEC: float = 1.0
+const WEAPON_DAMAGE_MULTIPLIER: float = 1.25
+const FIRE_RATE_MULTIPLIER: float = 1.30
 
 var data: WeaponData
 var cooldown_remaining: float = 0.0
@@ -37,7 +39,36 @@ func can_fire() -> bool:
 
 
 func reset_cooldown() -> void:
-	if data == null or data.fire_rate <= 0.0:
+	var rate: float = effective_fire_rate()
+	if rate <= 0.0:
 		cooldown_remaining = INVALID_FIRE_RATE_FALLBACK_COOLDOWN_SEC
 		return
-	cooldown_remaining = 1.0 / data.fire_rate
+	cooldown_remaining = 1.0 / rate
+
+
+func effective_damage() -> float:
+	if data == null:
+		return 0.0
+	var d: float = data.base_damage
+	for upgrade: UpgradeData in Game.run_state.upgrades_taken:
+		if upgrade.id == &"weapon_damage_25":
+			d *= WEAPON_DAMAGE_MULTIPLIER
+	return d
+
+
+func effective_fire_rate() -> float:
+	if data == null:
+		return 0.0
+	var r: float = data.fire_rate
+	for upgrade: UpgradeData in Game.run_state.upgrades_taken:
+		if upgrade.id == &"fire_rate_30":
+			r *= FIRE_RATE_MULTIPLIER
+	return r
+
+
+func level() -> int:
+	var n: int = 1
+	for upgrade: UpgradeData in Game.run_state.upgrades_taken:
+		if upgrade.id == &"weapon_damage_25" or upgrade.id == &"fire_rate_30":
+			n += 1
+	return n

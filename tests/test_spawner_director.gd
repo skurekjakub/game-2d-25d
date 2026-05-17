@@ -1,7 +1,12 @@
 extends GdUnitTestSuite
 
 
+func before_test() -> void:
+	Game.start_run()
+
+
 # Helpers
+
 
 func _make_phase(starts_at: int, duration: int, rate: float) -> SpawnPhase:
 	var p := SpawnPhase.new()
@@ -22,6 +27,7 @@ func _make_schedule(phases: Array) -> SpawnSchedule:
 
 
 # compute_spawn_position — pure math, no engine state
+
 
 func test_compute_spawn_position_is_on_radius_around_player() -> void:
 	var player_pos := Vector2(100.0, 200.0)
@@ -73,6 +79,7 @@ func test_clamp_spawn_to_bounds_clamps_outside_x_and_y() -> void:
 
 # Budget accumulation
 
+
 func test_starts_with_zero_spawn_budget() -> void:
 	var dir: SpawnerDirector = auto_free(SpawnerDirector.new())
 	assert_float(dir.spawn_budget).is_equal(0.0)
@@ -101,6 +108,7 @@ func test_consume_one_spawn_subtracts_one_from_budget() -> void:
 
 # Phase transition tracking
 
+
 func test_emits_phase_advanced_when_phase_index_advances() -> void:
 	var dir: SpawnerDirector = auto_free(SpawnerDirector.new())
 	dir.schedule = _make_schedule([_make_phase(0, 30, 1.0), _make_phase(30, 30, 2.0)])
@@ -122,3 +130,21 @@ func test_emits_wave_ended_once_when_time_exceeds_total_duration() -> void:
 	# Second crossing → no re-emit.
 	dir._on_time_advanced(75.0)
 	assert_int(fire_count[0]).is_equal(1)
+
+
+func test_wave_end_calls_game_end_run_with_victory_true() -> void:
+	Game.start_run()
+	var schedule := SpawnSchedule.new()
+	var phase := SpawnPhase.new()
+	phase.starts_at_seconds = 0
+	phase.duration_seconds = 10
+	phase.spawn_rate_per_sec = 0.0
+	schedule.phases = [phase]
+
+	var dir: SpawnerDirector = auto_free(SpawnerDirector.new())
+	dir.schedule = schedule
+	add_child(dir)
+	await get_tree().process_frame
+
+	dir._on_time_advanced(11.0)
+	assert_bool(Game.run_state.is_over).is_true()

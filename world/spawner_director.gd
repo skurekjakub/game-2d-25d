@@ -91,6 +91,7 @@ func _on_time_advanced(time_elapsed: float) -> void:
 		wave_ended.emit()
 		if is_inside_tree():
 			EventBus.wave_completed.emit()
+			Game.end_run(true)
 
 
 func _enemy_count_at_cap() -> bool:

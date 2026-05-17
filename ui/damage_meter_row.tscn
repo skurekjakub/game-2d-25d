@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/damage_meter_row.gd" id="1_row"]
+
+[node name="DamageMeterRow" type="HBoxContainer"]
+custom_minimum_size = Vector2(260, 22)
+script = ExtResource("1_row")
+
+[node name="NameLabel" type="Label" parent="."]
+custom_minimum_size = Vector2(80, 0)
+text = "?"
+
+[node name="ValueLabel" type="Label" parent="."]
+custom_minimum_size = Vector2(70, 0)
+horizontal_alignment = 2
+text = "0"
+
+[node name="PercentBar" type="ProgressBar" parent="."]
+custom_minimum_size = Vector2(110, 0)
+size_flags_horizontal = 3
+show_percentage = false
+value = 0.0

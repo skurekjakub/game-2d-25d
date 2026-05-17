@@ -9,6 +9,7 @@ const FIRE_RATE_MULTIPLIER: float = 1.30
 
 var data: WeaponData
 var cooldown_remaining: float = 0.0
+var node: Node = null
 
 
 func _init(weapon_data: WeaponData) -> void:

@@ -44,12 +44,14 @@ func _sync_blade_count() -> void:
 		var blade: OrbitalBlade = BLADE_SCENE.instantiate()
 		add_child(blade)
 		actual += 1
-	while actual > desired:
+	if actual > desired:
+		# Snapshot once: queue_free is deferred, so freed nodes still show in
+		# get_children() this frame. Re-querying _blades() inside the loop would
+		# keep returning the same tail node and free it repeatedly.
 		var blades := _blades()
-		# queue_free is deferred — track count locally so the loop doesn't re-free
-		# the same blade next iteration.
-		blades[blades.size() - 1].queue_free()
-		actual -= 1
+		while actual > desired:
+			blades[actual - 1].queue_free()
+			actual -= 1
 
 
 func _blades() -> Array:

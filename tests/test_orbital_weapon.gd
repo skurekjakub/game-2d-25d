@@ -47,5 +47,23 @@ func test_orbital_blade_positions_equally_spaced() -> void:
 	await get_tree().process_frame
 	orbital._owned_tick(0.0)
 	# 3 blades = 120° apart
-	var blades := orbital.get_children().filter(func(c): return c is Area2D)
+	var blades := orbital.get_children().filter(func(c): return c is OrbitalBlade)
 	assert_int(blades.size()).is_equal(3)
+
+
+func test_orbital_shrink_frees_distinct_blades() -> void:
+	# Grow to 3, then shrink to 1: must queue_free TWO different nodes, not the
+	# same tail blade twice.
+	Game.run_state.upgrades_taken = [
+		_upgrade(&"orbital_count_plus_1"), _upgrade(&"orbital_count_plus_1")
+	]
+	var orbital := _make_orbital_with_instance()
+	await get_tree().process_frame
+	orbital._owned_tick(0.0)
+	var initial: Array = orbital.get_children().filter(func(c): return c is OrbitalBlade)
+	assert_int(initial.size()).is_equal(3)
+	Game.run_state.upgrades_taken = []
+	orbital._owned_tick(0.0)
+	# Two distinct blades should now be queued for deletion (is_queued_for_deletion).
+	var queued: Array = initial.filter(func(b): return b.is_queued_for_deletion())
+	assert_int(queued.size()).is_equal(2)

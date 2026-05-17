@@ -73,7 +73,8 @@ re-inventing a wheel that's already shipped.
 | `UpgradeEffect` Strategy (M1.6 prep) | adjacent to `state.md`; GoF Strategy itself not chaptered |
 | `Game` / `UpgradeRegistry` autoloads + `PlayerLocator.find` | `service-locator.md`; cross-ref `singleton.md` for what we deliberately *didn't* do |
 | `Damageable.try_damage` static helper | not a book pattern — DRY refactor |
-| Future M1.6 `DamageAggregator` (subscribes to `damage_dealt`) | `observer.md`. The live `DamageMeterHud` 4 Hz throttled rebuild is **hysteresis throttling**, NOT Dirty Flag — Nystrom's gating criterion (`dirty-flag.md:102`) requires a perf problem to justify a real dirty bit; we don't have one. |
+| `DamageAggregator` autoload (subscribes to `damage_dealt`) | `observer.md` |
+| `DamageMeterHud` 4 Hz refresh | **none** — pure fixed-interval Timer polling. NOT Observer (no subscription), NOT Dirty Flag (`dirty-flag.md:102` gating fails — no perf problem), NOT hysteresis throttle (no damping). The honest name is "poll the world every 250ms". |
 | Future projectile churn optimization | `object-pool.md` |
 | Future swarm / boss-arena AI neighbour queries | `spatial-partition.md` |
 

@@ -33,9 +33,8 @@ func refresh_now() -> void:
 
 func _rebuild(rows: Array[RunStatsRow]) -> void:
 	for child: Node in _list.get_children():
-		_list.remove_child(child)
 		child.queue_free()
-	var top_damage: float = rows[0].damage if not rows.is_empty() else 0.0
+	var top_damage: float = rows[0].damage
 	for row_data: RunStatsRow in rows:
 		var widget: DamageMeterRow = ROW_SCENE.instantiate()
 		_list.add_child(widget)

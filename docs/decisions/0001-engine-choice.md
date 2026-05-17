@@ -1,6 +1,6 @@
 # ADR 0001 — Engine choice
 
-**Status:** Open.
+**Status:** Accepted (locked in at M1.0; revisit only if mobile becomes a confirmed target).
 
 ## Context
 

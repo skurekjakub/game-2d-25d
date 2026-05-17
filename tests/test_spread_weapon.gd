@@ -20,17 +20,8 @@ func test_spread_data_uses_basic_projectile_scene() -> void:
 
 
 func test_acquire_spread_adds_weapon_to_host() -> void:
-	# Build a minimal player tree with a WeaponHost.
-	var player := Node2D.new()
-	player.add_to_group("player")
-	add_child(auto_free(player))
-	var host := WeaponHost.new()
-	host.name = "WeaponHost"
-	player.add_child(host)
-	# Apply acquire upgrade.
+	var player: Player = await TestWorld.player_with_weapons(self, [])
 	var u := UpgradeData.new()
 	u.id = &"acquire_spread"
 	UpgradeRegistry.apply(u, player)
-	# Player now owns Spread.
-	var ids := host.owned_weapon_ids()
-	assert_bool(StringName("spread") in ids).is_true()
+	assert_bool(StringName("spread") in player.weapon_host.owned_weapon_ids()).is_true()

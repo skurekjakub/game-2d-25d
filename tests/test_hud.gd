@@ -47,18 +47,9 @@ func test_hud_resets_on_run_started() -> void:
 func test_hud_weapon_list_scales_to_owned_weapons() -> void:
 	var hud: Control = auto_free(preload("res://ui/hud.tscn").instantiate())
 	add_child(hud)
-	# Build a player-with-host owning 3 weapons.
-	var player := Node2D.new()
-	player.add_to_group("player")
-	add_child(auto_free(player))
-	var host := WeaponHost.new()
-	host.name = "WeaponHost"
-	player.add_child(host)
-	for wid: StringName in [&"blaster", &"aura", &"orbital"]:
-		var d := WeaponData.new()
-		d.id = wid
-		d.display_name = String(wid).capitalize()
-		host.weapons.append(WeaponInstance.new(d))
+	var player: Player = await TestWorld.player_with_weapons(
+		self, [&"blaster", &"aura", &"orbital"]
+	)
 	await get_tree().process_frame
 	# Trigger HUD refresh.
 	EventBus.upgrade_applied.emit(UpgradeData.new())

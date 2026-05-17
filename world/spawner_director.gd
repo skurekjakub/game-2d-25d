@@ -118,13 +118,10 @@ func _try_spawn_one(phase: SpawnPhase) -> void:
 
 # Player-position lookup via group; null-safe.
 func _player_position() -> Vector2:
-	var players := get_tree().get_nodes_in_group("player")
-	if players.is_empty():
+	var p: Player = PlayerLocator.find(get_tree())
+	if p == null:
 		return Vector2.ZERO
-	var p: Node = players[0]
-	if p is Node2D:
-		return (p as Node2D).global_position
-	return Vector2.ZERO
+	return p.global_position
 
 
 # Spawn radius = viewport diagonal / 2 + SPAWN_MARGIN.

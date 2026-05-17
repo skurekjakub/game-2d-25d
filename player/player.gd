@@ -5,13 +5,14 @@ extends CharacterBody2D
 @export var contact_slow_multiplier: float = 0.5
 
 @onready var _health: HealthComponent = $HealthComponent
-@onready var _weapon_host: Node = $WeaponHost
+@onready var weapon_host: WeaponHost = $WeaponHost
 @onready var _visual: Polygon2D = $Visual
 @onready var _slow_zone: Area2D = $SlowZone
 
 const FLASH_DURATION_SEC := 0.1
 
-var _is_dead: bool = false
+# Read-only externally; mutated only by _on_died.
+var is_dead: bool = false
 var _base_color: Color
 var _flash_tween: Tween
 
@@ -58,12 +59,12 @@ func _on_max_hp_changed(new_max: float) -> void:
 
 
 func _on_died(_killer: Node) -> void:
-	if _is_dead:
+	if is_dead:
 		return
-	_is_dead = true
+	is_dead = true
 	velocity = Vector2.ZERO
 	set_physics_process(false)
-	_weapon_host.set_physics_process(false)
+	weapon_host.set_physics_process(false)
 	Game.end_run(false)
 
 

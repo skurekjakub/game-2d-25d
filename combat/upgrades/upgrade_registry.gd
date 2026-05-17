@@ -47,13 +47,10 @@ func _load_known_weapon_ids() -> Array[StringName]:
 
 
 func pick_random_3() -> Array[UpgradeData]:
-	var tree := get_tree()
-	var players: Array = tree.get_nodes_in_group("player") if tree != null else []
-	var player: Node = players[0] if not players.is_empty() else null
-	return pick_random_3_for(player)
+	return pick_random_3_for(PlayerLocator.find(get_tree()))
 
 
-func pick_random_3_for(player: Node) -> Array[UpgradeData]:
+func pick_random_3_for(player: Player) -> Array[UpgradeData]:
 	var available: Array[UpgradeData] = _available_for_picker(player)
 	var picks: Array[UpgradeData] = []
 	var remaining: Array[UpgradeData] = available.duplicate()
@@ -67,7 +64,7 @@ func pick_random_3_for(player: Node) -> Array[UpgradeData]:
 	return picks
 
 
-func _available_for_picker(player: Node) -> Array[UpgradeData]:
+func _available_for_picker(player: Player) -> Array[UpgradeData]:
 	var owned_ids: Array[StringName] = _owned_weapon_ids_for(player)
 	var result: Array[UpgradeData] = []
 	for u: UpgradeData in pool:
@@ -89,13 +86,10 @@ func _available_for_picker(player: Node) -> Array[UpgradeData]:
 	return result
 
 
-func _owned_weapon_ids_for(player: Node) -> Array[StringName]:
+func _owned_weapon_ids_for(player: Player) -> Array[StringName]:
 	if player == null:
 		return []
-	var host := player.get_node_or_null("WeaponHost") as WeaponHost
-	if host == null:
-		return []
-	return host.owned_weapon_ids()
+	return player.weapon_host.owned_weapon_ids()
 
 
 func _weapon_prefix_of(s: String) -> StringName:
@@ -122,7 +116,7 @@ func _pick_one_weighted(candidates: Array[UpgradeData]) -> UpgradeData:
 	return candidates[candidates.size() - 1]
 
 
-func apply(upgrade: UpgradeData, player: Node) -> void:
+func apply(upgrade: UpgradeData, player: Player) -> void:
 	if upgrade == null or player == null:
 		return
 	var hc: HealthComponent = player.get_node_or_null("HealthComponent") as HealthComponent
@@ -132,8 +126,7 @@ func apply(upgrade: UpgradeData, player: Node) -> void:
 				hc.set_max_hp(hc.max_hp + MAX_HP_BONUS)
 				hc.set_hp(hc.max_hp)
 		&"move_speed_15":
-			if "speed" in player:
-				player.set("speed", player.get("speed") * MOVE_SPEED_MULTIPLIER)
+			player.speed *= MOVE_SPEED_MULTIPLIER
 		&"heal_to_full":
 			if hc != null:
 				hc.set_hp(hc.max_hp)
@@ -146,24 +139,18 @@ func apply(upgrade: UpgradeData, player: Node) -> void:
 		&"spread_pellets_plus_1":
 			pass
 		&"acquire_spread":
-			var host := player.get_node_or_null("WeaponHost") as WeaponHost
-			if host != null:
-				host.add_weapon(load(SPREAD_DATA_PATH))
+			player.weapon_host.add_weapon(load(SPREAD_DATA_PATH))
 		&"aura_damage_25":
 			pass
 		&"aura_radius_25":
 			pass
 		&"acquire_aura":
-			var host := player.get_node_or_null("WeaponHost") as WeaponHost
-			if host != null:
-				host.add_weapon(load(AURA_DATA_PATH))
+			player.weapon_host.add_weapon(load(AURA_DATA_PATH))
 		&"orbital_damage_25":
 			pass
 		&"orbital_count_plus_1":
 			pass
 		&"acquire_orbital":
-			var host := player.get_node_or_null("WeaponHost") as WeaponHost
-			if host != null:
-				host.add_weapon(load(ORBITAL_DATA_PATH))
+			player.weapon_host.add_weapon(load(ORBITAL_DATA_PATH))
 		_:
 			push_warning("UpgradeRegistry: no apply() branch for id=%s" % upgrade.id)

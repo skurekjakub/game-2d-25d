@@ -26,14 +26,11 @@ func owned_tick(delta: float) -> void:
 		if _hit_cooldowns[key] <= 0.0:
 			_hit_cooldowns.erase(key)
 	for body in get_overlapping_bodies():
-		if not body.is_in_group("enemies"):
+		# Gate via group BEFORE Damageable so non-enemies never enter cooldown dict.
+		if not body.is_in_group(Damageable.ENEMY_GROUP):
 			continue
 		var key: int = body.get_instance_id()
 		if key in _hit_cooldowns:
 			continue
-		var hc := body.get_node_or_null("HealthComponent") as HealthComponent
-		if hc == null:
-			continue
-		hc.take_damage(damage, self)
-		EventBus.damage_dealt.emit(self, body, damage)
-		_hit_cooldowns[key] = RE_HIT_COOLDOWN_SEC
+		if Damageable.try_damage(body, damage, self):
+			_hit_cooldowns[key] = RE_HIT_COOLDOWN_SEC

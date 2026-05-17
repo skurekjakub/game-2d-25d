@@ -77,13 +77,10 @@ func _refresh_weapon_list() -> void:
 	for child in _weapon_list.get_children():
 		_weapon_list.remove_child(child)
 		child.queue_free()
-	var players := get_tree().get_nodes_in_group("player")
-	if players.is_empty():
+	var player: Player = PlayerLocator.find(get_tree())
+	if player == null:
 		return
-	var host := players[0].get_node_or_null("WeaponHost") as WeaponHost
-	if host == null:
-		return
-	for weapon in host.weapons:
+	for weapon in player.weapon_host.weapons:
 		var line := Label.new()
 		var weapon_name: String = weapon.data.display_name if weapon.data != null else "?"
 		line.text = "%s Lv.%d" % [weapon_name, weapon.level()]

@@ -54,9 +54,4 @@ func _apply_tick_damage() -> void:
 		return
 	var dmg: float = instance.effective_damage()
 	for body: Node2D in get_overlapping_bodies():
-		if not body.is_in_group("enemies"):
-			continue
-		var hc := body.get_node_or_null("HealthComponent") as HealthComponent
-		if hc != null:
-			hc.take_damage(dmg, self)
-			EventBus.damage_dealt.emit(self, body, dmg)
+		Damageable.try_damage(body, dmg, self)

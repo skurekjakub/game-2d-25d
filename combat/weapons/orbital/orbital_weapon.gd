@@ -46,6 +46,8 @@ func _sync_blade_count() -> void:
 		actual += 1
 	while actual > desired:
 		var blades := _blades()
+		# queue_free is deferred — track count locally so the loop doesn't re-free
+		# the same blade next iteration.
 		blades[blades.size() - 1].queue_free()
 		actual -= 1
 

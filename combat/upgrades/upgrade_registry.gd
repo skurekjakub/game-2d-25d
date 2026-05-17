@@ -3,8 +3,6 @@ extends Node
 const DATA_DIR: String = "res://combat/upgrades/data"
 const MAX_HP_BONUS: float = 20.0
 const MOVE_SPEED_MULTIPLIER: float = 1.15
-const WEAPON_DAMAGE_MULTIPLIER: float = 1.25
-const FIRE_RATE_MULTIPLIER: float = 1.30
 
 var pool: Array[UpgradeData] = []
 

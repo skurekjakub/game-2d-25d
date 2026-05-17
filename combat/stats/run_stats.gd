@@ -1,8 +1,8 @@
 class_name RunStats
-extends Resource
+extends RefCounted
 
-var damage_by_weapon: Dictionary = {}
-var alive_time_by_weapon: Dictionary = {}
+var damage_by_weapon: Dictionary[StringName, float] = {}
+var alive_time_by_weapon: Dictionary[StringName, float] = {}
 var run_started_at: float = 0.0
 var run_ended_at: float = 0.0
 
@@ -15,7 +15,7 @@ func total_damage() -> float:
 
 
 func add_damage(weapon_id: StringName, amount: float) -> void:
-	if weapon_id == &"" or amount <= 0.0:
+	if weapon_id == &"" or not (amount > 0.0) or not is_finite(amount):
 		return
 	damage_by_weapon[weapon_id] = damage_by_weapon.get(weapon_id, 0.0) + amount
 

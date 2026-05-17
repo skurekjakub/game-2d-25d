@@ -1,6 +1,7 @@
 extends Node
 
 var run_state: RunState
+var _run_ended_emitted: bool = false
 
 
 func _ready() -> void:
@@ -8,7 +9,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if run_state != null:
+	if run_state != null and not run_state.is_over:
 		run_state.time_elapsed += delta
 
 
@@ -19,7 +20,16 @@ func start_run() -> void:
 	run_state.time_elapsed = 0.0
 	run_state.upgrades_taken = []
 	run_state.is_over = false
+	_run_ended_emitted = false
 	EventBus.run_started.emit()
+
+
+func end_run(victory: bool) -> void:
+	if _run_ended_emitted:
+		return
+	_run_ended_emitted = true
+	run_state.is_over = true
+	EventBus.run_ended.emit(victory)
 
 
 func xp_needed(for_level: int) -> int:

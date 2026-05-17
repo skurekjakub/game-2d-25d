@@ -66,3 +66,39 @@ func test_start_run_initializes_is_over_false() -> void:
 	var game: Node = _make_game()
 	game.start_run()
 	assert_bool(game.run_state.is_over).is_false()
+
+
+func test_end_run_emits_run_ended_once() -> void:
+	var game: Node = _make_game()
+	game.start_run()
+	monitor_signals(EventBus, false)
+	game.end_run(false)
+	game.end_run(true)
+	await assert_signal(EventBus).is_emitted("run_ended", false)
+	await assert_signal(EventBus).wait_until(200).is_not_emitted("run_ended", true)
+
+
+func test_end_run_sets_is_over_true() -> void:
+	var game: Node = _make_game()
+	game.start_run()
+	game.end_run(true)
+	assert_bool(game.run_state.is_over).is_true()
+
+
+func test_process_does_not_advance_time_after_end_run() -> void:
+	var game: Node = _make_game()
+	game.start_run()
+	game.end_run(false)
+	var before: float = game.run_state.time_elapsed
+	game._process(0.5)
+	assert_float(game.run_state.time_elapsed).is_equal(before)
+
+
+func test_start_run_resets_run_ended_guard() -> void:
+	var game: Node = _make_game()
+	game.start_run()
+	game.end_run(true)
+	game.start_run()
+	monitor_signals(EventBus, false)
+	game.end_run(false)
+	await assert_signal(EventBus).is_emitted("run_ended", false)

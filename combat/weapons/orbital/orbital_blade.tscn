@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://combat/weapons/orbital/orbital_blade.gd" id="1_blade"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_blade"]
+radius = 8.0
+
+[node name="OrbitalBlade" type="Area2D"]
+script = ExtResource("1_blade")
+collision_layer = 0
+collision_mask = 4
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_blade")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.9, 0.9, 0.9, 0.9)
+polygon = PackedVector2Array(0, -8, 7, 0, 0, 8, -7, 0)

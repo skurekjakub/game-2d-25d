@@ -1,19 +1,22 @@
 extends Node
 
 const DATA_DIR: String = "res://combat/upgrades/data"
+const WEAPONS_DATA_DIR: String = "res://combat/weapons/data"
 const MAX_HP_BONUS: float = 20.0
 const MOVE_SPEED_MULTIPLIER: float = 1.15
 const SPREAD_DATA_PATH: String = "res://combat/weapons/data/spread.tres"
 const AURA_DATA_PATH: String = "res://combat/weapons/data/aura.tres"
 const ORBITAL_DATA_PATH: String = "res://combat/weapons/data/orbital.tres"
-const KNOWN_WEAPON_IDS: Array[StringName] = [&"blaster", &"aura", &"orbital", &"spread"]
 
 var pool: Array[UpgradeData] = []
+var known_weapon_ids: Array[StringName] = []
 
 
 func _ready() -> void:
 	if pool.is_empty():
 		pool = _load_pool()
+	if known_weapon_ids.is_empty():
+		known_weapon_ids = _load_known_weapon_ids()
 
 
 func _load_pool() -> Array[UpgradeData]:
@@ -27,6 +30,19 @@ func _load_pool() -> Array[UpgradeData]:
 		var res := load("%s/%s" % [DATA_DIR, entry])
 		if res is UpgradeData:
 			loaded.append(res)
+	return loaded
+
+
+func _load_known_weapon_ids() -> Array[StringName]:
+	# Derives the weapon roster from WeaponData resources on disk so the gating
+	# classifier stays in sync without a hand-maintained parallel list.
+	var loaded: Array[StringName] = []
+	for entry in ResourceLoader.list_directory(WEAPONS_DATA_DIR):
+		if not (entry.ends_with(".tres") or entry.ends_with(".res")):
+			continue
+		var res := load("%s/%s" % [WEAPONS_DATA_DIR, entry])
+		if res is WeaponData and res.id != &"":
+			loaded.append(res.id)
 	return loaded
 
 
@@ -83,7 +99,7 @@ func _owned_weapon_ids_for(player: Node) -> Array[StringName]:
 
 
 func _weapon_prefix_of(s: String) -> StringName:
-	for wid: StringName in KNOWN_WEAPON_IDS:
+	for wid: StringName in known_weapon_ids:
 		if s.begins_with(String(wid) + "_"):
 			return wid
 	return &""

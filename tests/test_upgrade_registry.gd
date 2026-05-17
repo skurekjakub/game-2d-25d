@@ -25,6 +25,7 @@ func _make_player_with_hc(speed: float, hc: HealthComponent) -> Node:
 func _registry_with_pool(pool: Array[UpgradeData]) -> Node:
 	var r: Node = auto_free(load("res://combat/upgrades/upgrade_registry.gd").new())
 	r.pool = pool
+	r.known_weapon_ids = r._load_known_weapon_ids()
 	return r
 
 
@@ -159,3 +160,10 @@ func test_pool_gating_surfaces_upgrades_after_acquisition() -> void:
 	var picks: Array = r.pick_random_3_for(player)
 	assert_int(picks.size()).is_equal(1)
 	assert_str(String(picks[0].id)).is_equal("aura_damage_25")
+
+
+func test_known_weapon_ids_derives_from_weapon_data_dir() -> void:
+	var r := _registry_with_pool([])
+	# Derived by scanning combat/weapons/data/*.tres — drift-proof vs hand-list.
+	for expected: StringName in [&"blaster", &"aura", &"orbital", &"spread"]:
+		assert_bool(expected in r.known_weapon_ids).is_true()

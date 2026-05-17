@@ -22,6 +22,7 @@ func _ready() -> void:
 	_base_color = _visual.color
 	_health.damaged.connect(_on_damaged)
 	_health.died.connect(_on_died)
+	_health.hp_changed.connect(_on_hp_changed)
 	_health.max_hp_changed.connect(_on_max_hp_changed)
 
 
@@ -43,10 +44,13 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
 
-func _on_damaged(amount: float, new_hp: float) -> void:
+func _on_damaged(amount: float, _new_hp: float) -> void:
 	EventBus.damage_dealt.emit(null, self, amount)
-	EventBus.player_health_changed.emit(new_hp, _health.max_hp)
 	_flash()
+
+
+func _on_hp_changed(new_hp: float) -> void:
+	EventBus.player_health_changed.emit(new_hp, _health.max_hp)
 
 
 func _on_max_hp_changed(new_max: float) -> void:

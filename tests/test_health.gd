@@ -84,3 +84,27 @@ func test_set_max_hp_emits_max_hp_changed() -> void:
 	var monitor := monitor_signals(hc)
 	hc.set_max_hp(120.0)
 	await assert_signal(monitor).is_emitted("max_hp_changed", [120.0])
+
+
+func test_set_hp_clamps_and_updates() -> void:
+	var hc := _make_health(100.0)
+	hc.set_hp(40.0)
+	assert_float(hc.hp).is_equal(40.0)
+	hc.set_hp(500.0)
+	assert_float(hc.hp).is_equal(100.0)
+	hc.set_hp(-20.0)
+	assert_float(hc.hp).is_equal(0.0)
+
+
+func test_set_hp_emits_hp_changed() -> void:
+	var hc := _make_health(100.0)
+	var monitor := monitor_signals(hc)
+	hc.set_hp(60.0)
+	await assert_signal(monitor).is_emitted("hp_changed", [60.0])
+
+
+func test_take_damage_emits_hp_changed() -> void:
+	var hc := _make_health(100.0)
+	var monitor := monitor_signals(hc)
+	hc.take_damage(30.0)
+	await assert_signal(monitor).is_emitted("hp_changed", [70.0])

@@ -5,6 +5,7 @@ extends Node
 signal damaged(amount: float, new_hp: float)
 signal died(killer: Node)
 signal max_hp_changed(new_max: float)
+signal hp_changed(new_hp: float)
 
 @export var max_hp: float = 100.0
 var hp: float = 0.0
@@ -21,10 +22,16 @@ func set_max_hp(value: float) -> void:
 	max_hp_changed.emit(max_hp)
 
 
+func set_hp(value: float) -> void:
+	hp = clamp(value, 0.0, max_hp)
+	hp_changed.emit(hp)
+
+
 func take_damage(amount: float, source: Node = null) -> void:
 	if hp <= 0.0:
 		return
 	hp = max(0.0, hp - amount)
+	hp_changed.emit(hp)
 	damaged.emit(amount, hp)
 	# Re-entrancy guard: a `damaged` handler may call take_damage recursively,
 	# transitioning hp to 0 and emitting `died` before we reach this line.

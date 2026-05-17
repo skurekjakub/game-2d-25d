@@ -64,13 +64,13 @@ func apply(upgrade: UpgradeData, player: Node) -> void:
 		&"max_hp_20":
 			if hc != null:
 				hc.set_max_hp(hc.max_hp + MAX_HP_BONUS)
-				hc.hp = hc.max_hp
+				hc.set_hp(hc.max_hp)
 		&"move_speed_15":
 			if "speed" in player:
 				player.set("speed", player.get("speed") * MOVE_SPEED_MULTIPLIER)
 		&"heal_to_full":
 			if hc != null:
-				hc.hp = hc.max_hp
+				hc.set_hp(hc.max_hp)
 		&"weapon_damage_25":
 			pass
 		&"fire_rate_30":

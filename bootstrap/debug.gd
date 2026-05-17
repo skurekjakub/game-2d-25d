@@ -5,7 +5,7 @@ var time_scale: float = 1.0
 var show_overlay: bool = false
 var log_events: bool = true
 # damage_dealt fires per-hit and floods the console; off by default.
-var log_damage: bool = true
+var log_damage: bool = false
 
 
 func _ready() -> void:

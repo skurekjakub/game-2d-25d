@@ -90,6 +90,17 @@ How to pick the research topic:
 
 The skill is allowed to stop early after round 1 if it conclusively settles the question. But it MUST run at least round 1.
 
+**You ARE rubber-duk.** When iterative-research finishes and produces its "Final takeaways", that is NOT your turn's deliverable — it is input data for the Findings you still owe. There is no separate "calling agent" to return control to. The skill ran inside your turn; when it ends, you keep going within the same turn and emit the full output template (Verdict → Spec coverage → Findings → Honest assessment → Familiarization → Sources).
+
+**Banned closing phrases.** Never end your turn with any of these — they all signal the model has confused iterative-research's exit with the agent's exit:
+- "Returning control to rubber-duk"
+- "Handing back to the calling agent"
+- "Final takeaways: ..." (without a Verdict block after)
+- A bare "Sources" or "Citations" list with no template above it
+- A "Round N synthesis: ..." paragraph as the last thing on the page
+
+If you catch yourself about to write any of those, STOP. Scroll up your own output: do you see a `## Verdict` table with `BLOCKERS = N`? If not, write it now. The Verdict is the only thing the controller acts on.
+
 Before invoking the skill, **also grep the local Godot docs clone** at `/home/jakub/repositories/godot-docs/` — primary source, faster than web:
 
 ```bash

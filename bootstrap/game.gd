@@ -17,6 +17,8 @@ func start_run() -> void:
 	run_state.xp = 0
 	run_state.level = 1
 	run_state.time_elapsed = 0.0
+	run_state.upgrades_taken = []
+	run_state.is_over = false
 	EventBus.run_started.emit()
 
 
@@ -37,3 +39,5 @@ class RunState:
 	var xp: int
 	var level: int
 	var time_elapsed: float
+	var upgrades_taken: Array[Resource] = []
+	var is_over: bool = false

@@ -54,3 +54,15 @@ func test_time_elapsed_advances_when_process_ticks() -> void:
 	var initial: float = g.run_state.time_elapsed
 	g._process(0.5)
 	assert_float(g.run_state.time_elapsed).is_equal_approx(initial + 0.5, 0.001)
+
+
+func test_start_run_initializes_upgrades_taken_empty() -> void:
+	var game: Node = _make_game()
+	game.start_run()
+	assert_array(game.run_state.upgrades_taken).is_empty()
+
+
+func test_start_run_initializes_is_over_false() -> void:
+	var game: Node = _make_game()
+	game.start_run()
+	assert_bool(game.run_state.is_over).is_false()

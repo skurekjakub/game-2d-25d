@@ -174,3 +174,38 @@ func test_level_counts_per_weapon_prefix_only() -> void:
 	var w := WeaponInstance.new(_make_data())  # blaster
 	assert_int(w.level()).is_equal(3)  # 1 base + 2 blaster_*
 	_reset_upgrades()
+
+
+func test_effective_pellet_count_defaults_to_data() -> void:
+	_reset_upgrades()
+	var d := _make_data()
+	d.pellet_count = 3
+	var w := WeaponInstance.new(d)
+	assert_int(w.effective_pellet_count()).is_equal(3)
+	_reset_upgrades()
+
+
+func test_effective_pellet_count_does_not_leak_across_weapons() -> void:
+	_reset_upgrades()
+	# spread_pellets_plus_1 must affect Spread only, not Blaster.
+	Game.run_state.upgrades_taken = [
+		_upgrade(&"spread_pellets_plus_1"),
+		_upgrade(&"spread_pellets_plus_1"),
+	]
+	var blaster := WeaponInstance.new(_make_data())  # id = "blaster"
+	assert_int(blaster.effective_pellet_count()).is_equal(1)
+	_reset_upgrades()
+
+
+func test_effective_pellet_count_stacks_per_weapon_key() -> void:
+	_reset_upgrades()
+	var spread_data := _make_data()
+	spread_data.id = &"spread"
+	spread_data.pellet_count = 3
+	Game.run_state.upgrades_taken = [
+		_upgrade(&"spread_pellets_plus_1"),
+		_upgrade(&"spread_pellets_plus_1"),
+	]
+	var spread := WeaponInstance.new(spread_data)
+	assert_int(spread.effective_pellet_count()).is_equal(5)
+	_reset_upgrades()

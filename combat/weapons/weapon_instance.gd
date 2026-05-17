@@ -69,6 +69,17 @@ func effective_fire_rate() -> float:
 	return r
 
 
+func effective_pellet_count() -> int:
+	if data == null:
+		return 1
+	var pellets: int = data.pellet_count
+	var pellets_key := StringName("%s_pellets_plus_1" % String(data.id))
+	for upgrade: UpgradeData in Game.run_state.upgrades_taken:
+		if upgrade.id == pellets_key:
+			pellets += 1
+	return max(1, pellets)
+
+
 func level() -> int:
 	if data == null:
 		return 1

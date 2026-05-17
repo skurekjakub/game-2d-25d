@@ -61,9 +61,7 @@ func _try_fire(weapon: WeaponInstance) -> void:
 
 
 func _spawn_pellets(weapon: WeaponInstance, target: Node2D) -> void:
-	var count: int = max(
-		1, weapon.data.pellet_count + weapon.count_upgrade(&"spread_pellets_plus_1")
-	)
+	var count: int = weapon.effective_pellet_count()
 	if count == 1:
 		_spawn_single(weapon, target.global_position)
 		return

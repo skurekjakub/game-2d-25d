@@ -6,6 +6,7 @@ var _run_ended_emitted: bool = false
 
 func _ready() -> void:
 	run_state = RunState.new()
+	EventBus.upgrade_applied.connect(_on_upgrade_applied)
 
 
 func _process(delta: float) -> void:
@@ -39,6 +40,10 @@ func xp_needed(for_level: int) -> int:
 func add_xp(amount: int) -> void:
 	run_state.xp += amount
 	EventBus.xp_gained.emit(amount)
+	_maybe_emit_level_up()
+
+
+func _on_upgrade_applied(_upgrade: Resource) -> void:
 	_maybe_emit_level_up()
 
 

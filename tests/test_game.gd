@@ -125,3 +125,15 @@ func test_start_run_resets_run_ended_guard() -> void:
 	monitor_signals(EventBus, false)
 	game.end_run(false)
 	await assert_signal(EventBus).is_emitted("run_ended", false)
+
+
+func test_on_upgrade_applied_drains_pending_level() -> void:
+	var game: Node = _make_game()
+	game.start_run()
+	# Stockpile enough for 2 levels: 8 + 11 = 19
+	game.add_xp(19)
+	assert_int(game.run_state.level).is_equal(2)
+	# Simulate the modal closing and Game receiving upgrade_applied.
+	# Pass null because _on_upgrade_applied ignores the payload.
+	game._on_upgrade_applied(null)
+	assert_int(game.run_state.level).is_equal(3)

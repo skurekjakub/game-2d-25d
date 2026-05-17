@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_weapondata")
-id = &"basic_blaster"
+id = &"blaster"
 display_name = "Basic Blaster"
 base_damage = 10.0
 fire_rate = 1.0

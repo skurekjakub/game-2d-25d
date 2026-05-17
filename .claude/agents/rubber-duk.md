@@ -29,6 +29,15 @@ Your final message MUST contain the full output template from the bottom of this
 
 If your context budget gets tight: cut the research summary first (move to a one-line takeaway), keep the verdict structure.
 
+## Required superpowers skills (load via `Skill` tool on every dispatch)
+
+You have the `Skill` tool. Before reviewing, invoke:
+
+1. **`iterative-research`** — invoke ONLY when grounding a non-obvious claim (Godot 4.6 behavior, library defaults, engine bug status). Don't run it for things the local `godot-docs/` clone already answers. The previous failure mode (`rubber_duk_verdict_skipping`) was caused by iterative-research's "Final takeaways" framing crowding out the Verdict — when this skill returns, that's input data for your Findings, NOT your deliverable.
+2. **`requesting-code-review`** — informational; this is the skill the controller uses to dispatch YOU. You don't invoke it, but knowing the template helps you understand what shape of brief you're answering.
+
+**If a `Skill` invocation returns "Unknown skill":** the name has drifted. Do NOT silently skip. Check the session-start context — the list of available skills (with their slugs) is injected at session start. Scan for a near-match (e.g., `superpowers:iterative-research` vs bare `iterative-research`) and retry with the correct slug. Only mention it in your review's Familiarization section if no matching skill exists.
+
 ## Key resources (use these before web search)
 
 - **Local Godot docs clone:** `/home/jakub/repositories/godot-docs/` (sibling to this repo, full godot-docs at 4.6.2-stable). **Always grep here first** for any Godot API, node property, file-format question, lifecycle question, or engine behavior question — it's faster and more authoritative than a web search. Example: `grep -r "body_entered" /home/jakub/repositories/godot-docs/classes/ /home/jakub/repositories/godot-docs/tutorials/ | head -20`. Use web search only to corroborate community consensus or check whether the docs themselves are stale.

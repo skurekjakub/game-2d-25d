@@ -27,8 +27,12 @@ func _on_level_up(_new_level: int) -> void:
 func _apply_pick(upgrade: UpgradeData) -> void:
 	var players := get_tree().get_nodes_in_group("player")
 	var player: Node = players[0] if not players.is_empty() else null
-	UpgradeRegistry.apply(upgrade, player)
+	# Append first so apply() and any synchronous downstream listener sees the
+	# upgrade in the canonical list. Pure-functional upgrades that count
+	# their own kind in upgrades_taken (e.g. "stacks N times" upgrades in M1.5+)
+	# would otherwise be off-by-one.
 	Game.run_state.upgrades_taken.append(upgrade)
+	UpgradeRegistry.apply(upgrade, player)
 	# Clear modal ref + unpause BEFORE emitting. The emit synchronously chains
 	# into Game._maybe_emit_level_up, which may re-emit `level_up` and re-enter
 	# _on_level_up. If that re-entry sees a stale `_modal`, the queued modal is

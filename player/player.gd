@@ -4,6 +4,10 @@ extends CharacterBody2D
 @export var speed: float = 200.0
 
 
+func _ready() -> void:
+	add_to_group("player")
+
+
 static func compute_velocity(input_vector: Vector2, p_speed: float) -> Vector2:
 	if input_vector == Vector2.ZERO:
 		return Vector2.ZERO

@@ -167,3 +167,17 @@ func test_known_weapon_ids_derives_from_weapon_data_dir() -> void:
 	# Derived by scanning combat/weapons/data/*.tres — drift-proof vs hand-list.
 	for expected: StringName in [&"blaster", &"aura", &"orbital", &"spread"]:
 		assert_bool(expected in r.known_weapon_ids).is_true()
+
+
+func test_apply_acquire_aura_adds_weapon_to_host() -> void:
+	var player := _player_with_weapons([] as Array[StringName])
+	UpgradeRegistry.apply(_make_upgrade(&"acquire_aura"), player)
+	var host: WeaponHost = player.get_node("WeaponHost") as WeaponHost
+	assert_bool(StringName("aura") in host.owned_weapon_ids()).is_true()
+
+
+func test_apply_acquire_orbital_adds_weapon_to_host() -> void:
+	var player := _player_with_weapons([] as Array[StringName])
+	UpgradeRegistry.apply(_make_upgrade(&"acquire_orbital"), player)
+	var host: WeaponHost = player.get_node("WeaponHost") as WeaponHost
+	assert_bool(StringName("orbital") in host.owned_weapon_ids()).is_true()

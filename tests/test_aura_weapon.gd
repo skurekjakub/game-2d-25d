@@ -48,6 +48,36 @@ func test_aura_radius_upgrade_scales_radius() -> void:
 	assert_float((shape.shape as CircleShape2D).radius).is_equal_approx(100.0, 0.001)
 
 
+func test_aura_damage_upgrade_increases_tick_damage() -> void:
+	# Pre-load aura_damage_25 → enemy should take 25% MORE damage per tick than
+	# the baseline test. Compares two runs (clean vs upgraded) for the same
+	# fixed tick count so the assertion is robust to varying tick alignment.
+	var baseline_loss: float = await _run_aura_damage_for_ticks(0)
+	var upgraded_loss: float = await _run_aura_damage_for_ticks(1)
+	assert_float(upgraded_loss).is_greater(baseline_loss)
+
+
+func _run_aura_damage_for_ticks(damage_upgrades: int) -> float:
+	Game.start_run()
+	if damage_upgrades > 0:
+		var ups: Array[UpgradeData] = []
+		for i: int in damage_upgrades:
+			ups.append(_upgrade(&"aura_damage_25"))
+		Game.run_state.upgrades_taken = ups
+	var aura := _make_aura_with_instance()
+	await get_tree().process_frame
+	var enemy: Node2D = auto_free(load("res://combat/enemies/enemy.tscn").instantiate())
+	enemy.global_position = Vector2.ZERO
+	add_child(enemy)
+	await get_tree().process_frame
+	var hc: HealthComponent = enemy.get_node("HealthComponent")
+	var hp_before: float = hc.hp
+	for i: int in 60:
+		aura._owned_tick(0.05)
+		await get_tree().process_frame
+	return hp_before - hc.hp
+
+
 func _upgrade(p_id: StringName) -> UpgradeData:
 	var u := UpgradeData.new()
 	u.id = p_id

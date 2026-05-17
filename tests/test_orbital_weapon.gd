@@ -51,6 +51,29 @@ func test_orbital_blade_positions_equally_spaced() -> void:
 	assert_int(blades.size()).is_equal(3)
 
 
+func test_orbital_blade_does_not_double_hit_within_cooldown() -> void:
+	# Two ticks within RE_HIT_COOLDOWN_SEC should only damage the enemy once.
+	var blade: OrbitalBlade = (
+		preload("res://combat/weapons/orbital/orbital_blade.tscn").instantiate()
+	)
+	blade.damage = 5.0
+	add_child(auto_free(blade))
+	await get_tree().process_frame
+	var enemy: Node2D = auto_free(load("res://combat/enemies/enemy.tscn").instantiate())
+	enemy.global_position = Vector2.ZERO
+	add_child(enemy)
+	# Two physics frames to register the overlap.
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	var hc: HealthComponent = enemy.get_node("HealthComponent")
+	var hp_before: float = hc.hp
+	blade.owned_tick(0.1)  # first hit
+	var hp_after_first: float = hc.hp
+	assert_float(hp_after_first).is_equal_approx(hp_before - 5.0, 0.001)
+	blade.owned_tick(0.1)  # within 0.5s cooldown → no second hit
+	assert_float(hc.hp).is_equal_approx(hp_after_first, 0.001)
+
+
 func test_orbital_shrink_frees_distinct_blades() -> void:
 	# Grow to 3, then shrink to 1: must queue_free TWO different nodes, not the
 	# same tail blade twice.

@@ -78,7 +78,7 @@ Run these checks and record results in your Familiarization section:
 1. **Files committed == files the spec listed.** `git show --name-only <sha>` vs the task's "Files:" list. Flag any extras (auto-generated `.uid` sidecars are allowed, anything else is scope creep) or missing files.
 2. **Each script declares the `class_name` the spec named.** `grep "^class_name <Name>" <file>`.
 3. **Each signal, method, and `@export` field the spec lists actually exists in the file.** `grep` for each name. The implementer can claim "implemented" while having silently dropped a field.
-4. **The scoped test file exists and currently passes.** Run `./tests/run.sh tests/test_<name>.gd` yourself; quote the `Overall Summary` line in your output. Don't trust the implementer's pasted output.
+4. **The scoped test file exists and currently passes.** Run `./tests/run.sh tests/<area>/<name>.gd` yourself (path mirrors the source, e.g. `tests/combat/stats/run_stats.gd`); quote the `Overall Summary` line in your output. Don't trust the implementer's pasted output.
 5. **Test count matches the spec's count.** If the spec lists 6 tests and the file has 5, flag it.
 6. **No accidental modifications outside the scoped files.** Any unrelated edit is a finding.
 7. **Commit message follows conventional format** (`feat(scope): ...`, `fix(scope): ...`, `chore: ...`).
@@ -271,7 +271,7 @@ These are the patterns and anti-patterns rubber-duk should know cold. Each item 
 
 - Test framework: GdUnit4 (per plan + architecture decision).
 - Pure-logic tests must NOT instantiate scene tree. Use `load("res://path.gd").new()` and test the script class directly.
-- One test file per source file, mirroring path: `player/player.gd` → `tests/test_player.gd`.
+- One test file per source file, mirroring path exactly under `tests/`: `player/player.gd` → `tests/player/player.gd`. No `test_` prefix.
 - TDD step ordering (write failing test → run → see fail → implement → run → see pass → commit) is non-negotiable per the active plan.
 - **Flag:** new logic without tests. Tests that instantiate the scene tree to test pure functions. Multiple source-file changes per commit without corresponding test changes.
 

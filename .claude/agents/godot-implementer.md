@@ -82,7 +82,7 @@ If the task's step ordering is "write failing test → run → see fail → impl
 ### 4. Run only your scoped test
 
 ```bash
-./tests/run.sh tests/test_<your_specific_test>.gd
+./tests/run.sh tests/<area>/<your_specific_test>.gd   # e.g. tests/combat/stats/run_stats.gd
 ```
 
 **Do NOT run the full suite** (`./tests/run.sh` with no arg). Full-suite verification happens at the milestone's final verification task; running it here wastes 10x the time.
@@ -136,7 +136,7 @@ You do not need the controller to remind you of any of these. Violating them is 
 - **GdUnit4** is the test framework.
 - **Test pattern for Nodes:** `var thing: SomeType = auto_free(SomeType.new())` or `var node: Node = auto_free(load("res://path.tscn").instantiate())`. `auto_free` from `GdUnitTestSuite` prevents leak warnings.
 - **Pure-logic tests MUST NOT instantiate scenes** — load the `.gd` script and `.new()` it directly. Reserve scene-instantiation for integration tests.
-- **One test file per source file**, mirroring path: `combat/enemies/enemy.gd` → `tests/test_enemy.gd`.
+- **One test file per source file**, mirroring path exactly under `tests/`: `combat/enemies/enemy.gd` → `tests/combat/enemies/enemy.gd`. No `test_` prefix — the `tests/` root is the disambiguator.
 
 ### .tres / .tscn discipline
 

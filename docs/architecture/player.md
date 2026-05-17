@@ -124,7 +124,7 @@ directly — see `docs/architecture/lookups-and-helpers.md` for why.
 
 ## Tests
 
-`tests/test_player.gd` — unit tests for damage / death / HP signal
+`tests/player/player.gd` — unit tests for damage / death / HP signal
 re-emit / contact-slow. Some use the real Player scene via
 `auto_free(preload(...))`; the new `TestWorld.player_with_weapons`
 scaffold is preferred for tests that need a configurable weapon list.

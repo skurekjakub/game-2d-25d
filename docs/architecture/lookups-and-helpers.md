@@ -202,7 +202,7 @@ in review.
 
 - `combat/lookups/player_locator.gd`
 - `combat/lookups/damageable.gd`
-- `tests/scaffolds/test_world.gd`
+- `tests/scaffolds/world.gd`
 - `player/player.gd:8` — the public `weapon_host` field
 - `docs/plans/2026-05-17-pre-milestone-1.6-soc-refactor.md` — full plan
   with revisions table from duck critique

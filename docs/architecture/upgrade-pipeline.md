@@ -174,9 +174,9 @@ need to know about effect types.
 
 ## Tests
 
-- `tests/test_upgrade_registry.gd` — pool gating + apply behavior
-- `tests/test_upgrade_picker.gd` — modal-pick chain + multi-level
-- `tests/test_weapon_instance.gd` — effective_damage / fire_rate /
+- `tests/combat/upgrades/upgrade_registry.gd` — pool gating + apply behavior
+- `tests/ui/upgrade_picker.gd` — modal-pick chain + multi-level
+- `tests/combat/weapons/weapon_instance.gd` — effective_damage / fire_rate /
   pellets / level read-through-list
 
 ---

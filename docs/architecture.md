@@ -196,7 +196,7 @@ Inside each feature dir, `.tscn` / `.gd` / `.tres` files for that feature live t
 
 - Test framework: [**GdUnit4**](https://github.com/MikeSchulze/gdUnit4) (chosen — see ADR-0002). Test suites live in `tests/`, runner at `tests/run.sh`.
 - Pure-logic functions get unit tests against fresh constructed instances; node-based tests use `auto_free()` and may add to the tree when scene state matters.
-- Default to **headless** runs (`./tests/run.sh tests/test_<name>.gd`). Drop `--headless` and run windowed when the test needs Tweens, real Area2D body/area signals, input events, or anything time/render-driven (project memory `godot_tests_windowed_mode`).
+- Default to **headless** runs (`./tests/run.sh tests/<area>/<name>.gd`, e.g. `tests/combat/stats/run_stats.gd`). Drop `--headless` and run windowed when the test needs Tweens, real Area2D body/area signals, input events, or anything time/render-driven (project memory `godot_tests_windowed_mode`).
 - Autoload state (`Game.run_state`, `EventBus` connections) **persists across tests** in the same process — use `Game.start_run()` in `before_test()` and disconnect any `EventBus.*.connect(listener)` you add in teardown.
 - Hand-written `.tres`/`.tscn` in tests should omit UID attributes (project memory `godot_uid_handwritten_tres`); the editor normalizes them on first open.
 

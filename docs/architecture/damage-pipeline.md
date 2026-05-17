@@ -155,11 +155,11 @@ would just hide bugs where a weapon kept ticking past death.
 
 | Test | Coverage |
 |---|---|
-| `tests/test_damageable.gd` (5) | `try_damage` happy path + 4 negative cases (non-enemy, no HC, null body, emit verification) |
-| `tests/test_aura_weapon.gd` | Aura damage flow including per-tick damage and damage-upgrade increase |
-| `tests/test_orbital_weapon.gd` | Re-hit cooldown prevents double-damage in same window |
-| `tests/test_weapon_host.gd` | Cone-fan projectile spawn + `is_over` halts ticks |
-| `tests/test_player.gd` | Player damage + death + HC re-emit |
+| `tests/combat/lookups/damageable.gd` (5) | `try_damage` happy path + 4 negative cases (non-enemy, no HC, null body, emit verification) |
+| `tests/combat/weapons/aura/aura_weapon.gd` | Aura damage flow including per-tick damage and damage-upgrade increase |
+| `tests/combat/weapons/orbital/orbital_weapon.gd` | Re-hit cooldown prevents double-damage in same window |
+| `tests/combat/weapons/weapon_host.gd` | Cone-fan projectile spawn + `is_over` halts ticks |
+| `tests/player/player.gd` | Player damage + death + HC re-emit |
 
 ---
 

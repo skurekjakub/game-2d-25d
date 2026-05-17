@@ -27,6 +27,7 @@ func test_player_scene_loads_and_instantiates() -> void:
 
 
 func test_died_emits_run_ended_false_and_disables_physics() -> void:
+	Game.start_run()
 	var scene := load("res://player/player.tscn") as PackedScene
 	var player: Node = auto_free(scene.instantiate())
 	add_child(player)
@@ -59,3 +60,34 @@ func test_damaged_emits_damage_dealt_eventbus() -> void:
 	assert_bool(captured.fired).is_true()
 	assert_float(captured.amount).is_equal(7.5)
 	assert_str(captured.target_name).is_equal("Player")
+
+
+func test_player_reemits_health_changed_on_damage() -> void:
+	var player: Player = auto_free(preload("res://player/player.tscn").instantiate())
+	add_child(player)
+	await get_tree().process_frame
+	monitor_signals(EventBus, false)
+	player._health.take_damage(15.0)
+	await assert_signal(EventBus).is_emitted(
+		"player_health_changed", [player._health.hp, player._health.max_hp]
+	)
+
+
+func test_player_reemits_health_changed_on_max_hp_change() -> void:
+	var player: Player = auto_free(preload("res://player/player.tscn").instantiate())
+	add_child(player)
+	await get_tree().process_frame
+	monitor_signals(EventBus, false)
+	player._health.set_max_hp(150.0)
+	await assert_signal(EventBus).is_emitted("player_health_changed", [player._health.hp, 150.0])
+
+
+func test_player_death_routes_through_game_end_run() -> void:
+	Game.start_run()
+	var player: Player = auto_free(preload("res://player/player.tscn").instantiate())
+	add_child(player)
+	await get_tree().process_frame
+	monitor_signals(EventBus, false)
+	player._health.take_damage(99999.0)
+	await assert_signal(EventBus).is_emitted("run_ended", [false])
+	assert_bool(Game.run_state.is_over).is_true()

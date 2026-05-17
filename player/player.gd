@@ -22,6 +22,7 @@ func _ready() -> void:
 	_base_color = _visual.color
 	_health.damaged.connect(_on_damaged)
 	_health.died.connect(_on_died)
+	_health.max_hp_changed.connect(_on_max_hp_changed)
 
 
 static func compute_velocity(input_vector: Vector2, p_speed: float) -> Vector2:
@@ -42,9 +43,14 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
 
-func _on_damaged(amount: float, _new_hp: float) -> void:
+func _on_damaged(amount: float, new_hp: float) -> void:
 	EventBus.damage_dealt.emit(null, self, amount)
+	EventBus.player_health_changed.emit(new_hp, _health.max_hp)
 	_flash()
+
+
+func _on_max_hp_changed(new_max: float) -> void:
+	EventBus.player_health_changed.emit(_health.hp, new_max)
 
 
 func _on_died(_killer: Node) -> void:
@@ -54,7 +60,7 @@ func _on_died(_killer: Node) -> void:
 	velocity = Vector2.ZERO
 	set_physics_process(false)
 	_weapon_host.set_physics_process(false)
-	EventBus.run_ended.emit(false)
+	Game.end_run(false)
 
 
 func _flash() -> void:

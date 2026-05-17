@@ -18,4 +18,4 @@ signal run_ended(victory: bool)
 
 # Spawner lifecycle
 signal spawn_phase_changed(phase_idx: int)
-signal wave_complete
+signal wave_completed

@@ -31,6 +31,6 @@ func test_event_bus_has_spawn_phase_changed_signal() -> void:
 	assert_bool(bus.has_signal("spawn_phase_changed")).is_true()
 
 
-func test_event_bus_has_wave_complete_signal() -> void:
+func test_event_bus_has_wave_completed_signal() -> void:
 	var bus: Node = auto_free(load("res://bootstrap/event_bus.gd").new())
-	assert_bool(bus.has_signal("wave_complete")).is_true()
+	assert_bool(bus.has_signal("wave_completed")).is_true()

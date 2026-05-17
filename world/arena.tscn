@@ -43,6 +43,9 @@ shape = SubResource("WallShape_vertical")
 position = Vector2(960, 0)
 shape = SubResource("WallShape_vertical")
 
+[node name="Enemies" type="Node2D" parent="."]
+y_sort_enabled = true
+
 [node name="Player" parent="." instance=ExtResource("2_player")]
 
 ; Camera lives here rather than inside player.tscn so Arena owns viewport framing.

@@ -1,6 +1,8 @@
 extends Node
 
 # Combat events
+# damage_dealt: source may be null (player contact-damage path). Listeners that
+# aggregate weapon-dealt damage must drop null-source events.
 signal damage_dealt(source: Node, target: Node, amount: float)
 signal enemy_killed(enemy: Node, position: Vector2)
 

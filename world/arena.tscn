@@ -19,7 +19,6 @@ y_sort_enabled = true
 [node name="Floor" type="Polygon2D" parent="."]
 z_index = -1
 polygon = PackedVector2Array(-960, -540, 960, -540, 960, 540, -960, 540)
-color = Color(0.15, 0.15, 0.18, 1)
 
 ; Grid overlay on the floor — placeholder spatial reference until art lands.
 ; z_index = -1 keeps it behind the y-sorted gameplay layer (player, enemies, walls).

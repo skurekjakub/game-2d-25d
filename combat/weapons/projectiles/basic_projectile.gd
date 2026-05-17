@@ -10,6 +10,7 @@ var _age: float = 0.0
 
 
 func _ready() -> void:
+	($Visual as Polygon2D).color = Palette.PROJECTILE_BASIC
 	body_entered.connect(_on_body_entered)
 
 

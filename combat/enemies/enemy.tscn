@@ -22,7 +22,6 @@ shape = SubResource("CircleShape2D_enemy")
 
 [node name="Visual" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(0, -10, 10, 10, -10, 10)
-color = Color(0.85, 0.25, 0.25, 1)
 
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("2_health")

@@ -9,7 +9,6 @@ extends CharacterBody2D
 @onready var _visual: Polygon2D = $Visual
 @onready var _slow_zone: Area2D = $SlowZone
 
-const FLASH_COLOR := Color(1.0, 0.3, 0.3, 1.0)
 const FLASH_DURATION_SEC := 0.1
 
 var _is_dead: bool = false
@@ -19,6 +18,7 @@ var _flash_tween: Tween
 
 func _ready() -> void:
 	add_to_group("player")
+	_visual.color = Palette.PLAYER_BODY
 	_base_color = _visual.color
 	_health.damaged.connect(_on_damaged)
 	_health.died.connect(_on_died)
@@ -60,6 +60,6 @@ func _on_died(_killer: Node) -> void:
 func _flash() -> void:
 	if _flash_tween and _flash_tween.is_valid():
 		_flash_tween.kill()
-	_visual.color = FLASH_COLOR
+	_visual.color = Palette.PLAYER_DAMAGE_FLASH
 	_flash_tween = create_tween()
 	_flash_tween.tween_property(_visual, "color", _base_color, FLASH_DURATION_SEC)

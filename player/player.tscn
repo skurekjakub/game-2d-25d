@@ -22,7 +22,6 @@ shape = SubResource("CircleShape2D_player")
 
 [node name="Visual" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(-12, -12, 12, -12, 12, 12, -12, 12)
-color = Color(0.3, 0.6, 1, 1)
 
 [node name="WeaponHost" type="Node" parent="."]
 script = ExtResource("2_weapon_host")

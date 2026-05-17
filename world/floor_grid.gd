@@ -3,7 +3,7 @@ extends Node2D
 
 @export var size: Vector2 = Vector2(1920, 1080)
 @export var cell_size: int = 64
-@export var line_color: Color = Color(0.25, 0.25, 0.28, 1.0)
+@export var line_color: Color = Palette.FLOOR_GRID_LINE
 @export var line_width: float = 1.0
 
 

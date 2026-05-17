@@ -5,6 +5,7 @@ extends Area2D
 
 
 func _ready() -> void:
+	($Visual as Polygon2D).color = Palette.XP_GEM
 	body_entered.connect(_on_body_entered)
 
 

@@ -6,6 +6,7 @@ const BASIC_WALKER_DATA := preload("res://combat/enemies/data/basic_walker.tres"
 
 
 func _ready() -> void:
+	($Floor as Polygon2D).color = Palette.ARENA_BG
 	Game.start_run()
 	EventBus.enemy_killed.connect(_on_enemy_killed)
 	EventBus.wave_completed.connect(_on_wave_completed)

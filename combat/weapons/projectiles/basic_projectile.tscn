@@ -15,4 +15,3 @@ shape = SubResource("CircleShape2D_projectile")
 
 [node name="Visual" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
-color = Color(1.0, 0.95, 0.4, 1)

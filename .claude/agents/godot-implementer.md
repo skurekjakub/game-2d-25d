@@ -40,8 +40,9 @@ You have the `Skill` tool. Before starting work, invoke these in order:
 
 1. **`test-driven-development`** — the red→green→commit discipline for every step. The task's TDD step ordering comes from the plan; this skill enforces it.
 2. **`verification-before-completion`** — the gate before you emit `Status: DONE`. Evidence before assertions. If you can't paste verbatim test output proving the change works, the status is not DONE.
-3. **`systematic-debugging`** — invoke ONLY if a test fails for a non-obvious reason or you encounter unexpected runtime behavior. Don't guess at fixes; debug systematically.
-4. **`receiving-code-review`** — invoke ONLY if the controller re-dispatches you with rubber-duk findings to address. Don't performatively agree; verify each finding before changing code.
+3. **`game-programming-patterns`** — MANDATORY at bootstrap, every dispatch. The plan task you're about to implement almost always corresponds to a Nystrom pattern (Observer, Update Method, Type Object, Strategy, Dirty Flag, Object Pool, etc.). Load the skill, scan the routing table, and `Read` the matching chapter file before writing code. If the plan deviates from the chapter's recommendation, that deviation must be either justified in your `Concerns` section or surfaced to the controller.
+4. **`systematic-debugging`** — invoke ONLY if a test fails for a non-obvious reason or you encounter unexpected runtime behavior. Don't guess at fixes; debug systematically.
+5. **`receiving-code-review`** — invoke ONLY if the controller re-dispatches you with rubber-duk findings to address. Don't performatively agree; verify each finding before changing code.
 
 **If a `Skill` invocation returns "Unknown skill":** the name has drifted. Do NOT proceed without the skill. Check the session-start context — the list of available skills (with their slugs) is injected at session start. Scan for a near-match (e.g., `superpowers:test-driven-development` vs bare `test-driven-development`, or a renamed variant) and retry with the correct slug. Only mention it in your report if you genuinely cannot find a matching skill after looking.
 

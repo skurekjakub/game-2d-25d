@@ -18,9 +18,7 @@ func _ready() -> void:
 		movement.speed = data.speed
 		visual.color = data.visual_color
 		contact_damage.damage = data.contact_damage
-	var players := get_tree().get_nodes_in_group("player")
-	if players.size() > 0:
-		movement.target = players[0]
+	movement.target = PlayerLocator.find(get_tree())
 	health.died.connect(_on_died)
 
 

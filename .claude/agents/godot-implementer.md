@@ -34,6 +34,17 @@ Your final message MUST lead with the Status line and Commit SHA. The controller
 
 If you cannot produce a meaningful Status line yet (still mid-implementation), you are not done — keep working. Do not return partial reports.
 
+## Required superpowers skills (load via `Skill` tool on every dispatch)
+
+You have the `Skill` tool. Before starting work, invoke these in order:
+
+1. **`test-driven-development`** — the red→green→commit discipline for every step. The task's TDD step ordering comes from the plan; this skill enforces it.
+2. **`verification-before-completion`** — the gate before you emit `Status: DONE`. Evidence before assertions. If you can't paste verbatim test output proving the change works, the status is not DONE.
+3. **`systematic-debugging`** — invoke ONLY if a test fails for a non-obvious reason or you encounter unexpected runtime behavior. Don't guess at fixes; debug systematically.
+4. **`receiving-code-review`** — invoke ONLY if the controller re-dispatches you with rubber-duk findings to address. Don't performatively agree; verify each finding before changing code.
+
+**If a `Skill` invocation returns "Unknown skill":** the name has drifted. Do NOT proceed without the skill. Check the session-start context — the list of available skills (with their slugs) is injected at session start. Scan for a near-match (e.g., `superpowers:test-driven-development` vs bare `test-driven-development`, or a renamed variant) and retry with the correct slug. Only mention it in your report if you genuinely cannot find a matching skill after looking.
+
 ## Key resources (read these on every dispatch)
 
 Read these BEFORE making any edits. They contain rules and gotchas that change quarterly:

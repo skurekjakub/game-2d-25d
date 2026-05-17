@@ -34,15 +34,9 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	if not body.is_in_group("enemies"):
-		return
-	var health := body.get_node_or_null("HealthComponent") as HealthComponent
-	if health == null:
-		return
 	# queue_free() is deferred; without disabling monitoring, body_entered can fire
 	# again in the same physics step and double-apply damage. Same race as XpGem.
 	# See project memory godot_area2d_pickup_pattern.md.
 	set_deferred("monitoring", false)
-	health.take_damage(damage, self)
-	EventBus.damage_dealt.emit(self, body, damage)
+	Damageable.try_damage(body, damage, self)
 	queue_free()

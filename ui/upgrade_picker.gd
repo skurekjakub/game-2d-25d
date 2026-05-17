@@ -25,8 +25,7 @@ func _on_level_up(_new_level: int) -> void:
 
 
 func _apply_pick(upgrade: UpgradeData) -> void:
-	var players := get_tree().get_nodes_in_group("player")
-	var player: Node = players[0] if not players.is_empty() else null
+	var player: Player = PlayerLocator.find(get_tree())
 	# Append first so apply() and any synchronous downstream listener sees the
 	# upgrade in the canonical list. Pure-functional upgrades that count
 	# their own kind in upgrades_taken (e.g. "stacks N times" upgrades in M1.5+)
@@ -44,8 +43,7 @@ func _apply_pick(upgrade: UpgradeData) -> void:
 
 
 func _player_is_dead() -> bool:
-	var players := get_tree().get_nodes_in_group("player")
-	if players.is_empty():
+	var p: Player = PlayerLocator.find(get_tree())
+	if p == null:
 		return true
-	var p: Node = players[0]
-	return p.get("_is_dead") == true
+	return p.is_dead

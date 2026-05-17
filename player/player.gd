@@ -4,14 +4,15 @@ extends CharacterBody2D
 @export var speed: float = 200.0
 @export var contact_slow_multiplier: float = 0.5
 
-@onready var _health: HealthComponent = $HealthComponent
-@onready var _weapon_host: Node = $WeaponHost
+@onready var health: HealthComponent = $HealthComponent
+@onready var weapon_host: WeaponHost = $WeaponHost
 @onready var _visual: Polygon2D = $Visual
 @onready var _slow_zone: Area2D = $SlowZone
 
 const FLASH_DURATION_SEC := 0.1
 
-var _is_dead: bool = false
+# Read-only externally; mutated only by _on_died.
+var is_dead: bool = false
 var _base_color: Color
 var _flash_tween: Tween
 
@@ -20,10 +21,10 @@ func _ready() -> void:
 	add_to_group("player")
 	_visual.color = Palette.PLAYER_BODY
 	_base_color = _visual.color
-	_health.damaged.connect(_on_damaged)
-	_health.died.connect(_on_died)
-	_health.hp_changed.connect(_on_hp_changed)
-	_health.max_hp_changed.connect(_on_max_hp_changed)
+	health.damaged.connect(_on_damaged)
+	health.died.connect(_on_died)
+	health.hp_changed.connect(_on_hp_changed)
+	health.max_hp_changed.connect(_on_max_hp_changed)
 
 
 static func compute_velocity(input_vector: Vector2, p_speed: float) -> Vector2:
@@ -50,20 +51,20 @@ func _on_damaged(amount: float, _new_hp: float) -> void:
 
 
 func _on_hp_changed(new_hp: float) -> void:
-	EventBus.player_health_changed.emit(new_hp, _health.max_hp)
+	EventBus.player_health_changed.emit(new_hp, health.max_hp)
 
 
 func _on_max_hp_changed(new_max: float) -> void:
-	EventBus.player_health_changed.emit(_health.hp, new_max)
+	EventBus.player_health_changed.emit(health.hp, new_max)
 
 
 func _on_died(_killer: Node) -> void:
-	if _is_dead:
+	if is_dead:
 		return
-	_is_dead = true
+	is_dead = true
 	velocity = Vector2.ZERO
 	set_physics_process(false)
-	_weapon_host.set_physics_process(false)
+	weapon_host.set_physics_process(false)
 	Game.end_run(false)
 
 

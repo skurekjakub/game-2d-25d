@@ -53,9 +53,9 @@ func test_apply_pick_chains_into_next_modal_when_level_pending() -> void:
 	# Requires UpgradeRegistry pool to be non-empty (autoload _ready loads it)
 	# and a "player" group node so the chained _on_level_up's dead-check passes.
 	var picker := _make_picker()
-	var player_stub: Node = auto_free(Node.new())
-	player_stub.add_to_group("player")
-	add_child(player_stub)
+	var player: Player = auto_free(preload("res://player/player.tscn").instantiate())
+	add_child(player)
+	await get_tree().process_frame
 	# Pre-seed XP to cross the next threshold on the drain.
 	Game.run_state.xp = Game.xp_needed(Game.run_state.level)
 	monitor_signals(EventBus, false)

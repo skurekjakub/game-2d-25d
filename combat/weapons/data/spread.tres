@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://combat/weapons/weapon_data.gd" id="1_weapondata"]
+[ext_resource type="PackedScene" path="res://combat/weapons/projectiles/basic_projectile.tscn" id="2_projectile"]
+
+[resource]
+script = ExtResource("1_weapondata")
+id = &"spread"
+display_name = "Spread"
+base_damage = 5.0
+fire_rate = 0.8
+range = 500.0
+targeting = 0
+projectile_scene = ExtResource("2_projectile")
+pellet_count = 3

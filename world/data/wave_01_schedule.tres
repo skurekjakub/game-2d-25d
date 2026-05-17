@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SpawnSchedule" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://world/spawn_schedule.gd" id="1_spawn_schedule"]
+[ext_resource type="Resource" path="res://world/data/wave_01_phase_a.tres" id="2_phase_a"]
+[ext_resource type="Resource" path="res://world/data/wave_01_phase_b.tres" id="3_phase_b"]
+
+[resource]
+script = ExtResource("1_spawn_schedule")
+phases = Array[Resource]([ExtResource("2_phase_a"), ExtResource("3_phase_b")])

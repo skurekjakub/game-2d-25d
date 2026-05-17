@@ -42,3 +42,26 @@ func test_hud_resets_on_run_started() -> void:
 	await get_tree().process_frame
 	var level_label: Label = hud.get_node("LevelLabel")
 	assert_str(level_label.text).contains("1")
+
+
+func test_hud_weapon_list_scales_to_owned_weapons() -> void:
+	var hud: Control = auto_free(preload("res://ui/hud.tscn").instantiate())
+	add_child(hud)
+	# Build a player-with-host owning 3 weapons.
+	var player := Node2D.new()
+	player.add_to_group("player")
+	add_child(auto_free(player))
+	var host := WeaponHost.new()
+	host.name = "WeaponHost"
+	player.add_child(host)
+	for wid: StringName in [&"blaster", &"aura", &"orbital"]:
+		var d := WeaponData.new()
+		d.id = wid
+		d.display_name = String(wid).capitalize()
+		host.weapons.append(WeaponInstance.new(d))
+	await get_tree().process_frame
+	# Trigger HUD refresh.
+	EventBus.upgrade_applied.emit(UpgradeData.new())
+	await get_tree().process_frame
+	var weapon_list: VBoxContainer = hud.get_node("WeaponList")
+	assert_int(weapon_list.get_child_count()).is_equal(3)

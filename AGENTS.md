@@ -23,6 +23,7 @@ A 2D / 2.5D isometric (or top-down) game built in **Godot 4.x**. Desktop-first; 
 
 - Terse responses. State results, not narration.
 - Comments only when the *why* is non-obvious (a hidden constraint, a workaround, a subtle invariant). Don't describe what the code does — names do that.
+- **No archaeology comments after refactors.** When you delete, move, or rename code, the new state stands alone. Do NOT write `# X was removed in Y`, `# moved to Z`, `# (was: ...)`, `# legacy path — see git log`, or any variant. The diff captures the change; the comment will rot. This is the highest-priority comment antipattern in this repo — flagged and enforced via hook, rubber-duk checklist, godot-implementer rules, and project memory `feedback_no_archaeology_comments`.
 - No trailing summaries that just repeat the diff.
 
 ## Files

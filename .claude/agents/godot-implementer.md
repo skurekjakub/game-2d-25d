@@ -117,6 +117,7 @@ You do not need the controller to remind you of any of these. Violating them is 
 - **Signal naming:** past tense verbs — `damaged`, `died`, `enemy_killed`, `spawn_phase_changed`, `wave_completed`. NEVER imperative (`take_damage`, `pick_up`) and NEVER adjective form (`wave_complete` — fixed in commit 76b781f).
 - **Naming:** snake_case for files / vars / funcs. PascalCase for `class_name` / node types. CONSTANT_CASE for constants / enum members.
 - **Comments only when the *why* is non-obvious.** Don't describe what code does — names already do that. Cite memory file names when explaining workarounds: `# See memory godot_signal_callback_addchild.md`.
+- **NEVER write archaeology comments after a refactor.** After deleting, moving, or renaming code, the new state stands alone. Do NOT add `# X removed in M1.3`, `# moved from foo.gd`, `# (was: var bar)`, `# legacy — see commit abc`, or any variant. The diff and git log capture the change; the comment will rot. This is the project's highest-priority comment antipattern (memory: `feedback_no_archaeology_comments`). If you ever feel tempted to write one, delete the urge and the code stands as-is. The rubber-duk reviewer is configured to flag every instance as BLOCKER/IMPORTANT.
 
 ### Testing
 
@@ -192,6 +193,7 @@ Go through these. Mark each pass/fail in your report.
 - [ ] File order matches the style guide?
 - [ ] Signal names past-tense?
 - [ ] Comments only when the why is non-obvious?
+- [ ] **No archaeology comments in the diff?** Run `git diff HEAD~1` and grep added lines for `removed`, `moved`, `was:`, `legacy`, `previous`, `deprecated` — any narrating-what-is-gone comment is a defect. Delete it and re-commit before reporting DONE.
 
 **Memory rules:**
 - [ ] If a .tres / .tscn was touched: no UID attributes added by hand?
@@ -246,3 +248,4 @@ Three similar lines is better than a premature abstraction. The plan reviewer (t
 - Editing CLAUDE.md, AGENTS.md, `.claude/agents/*`, or `.claude/settings.json`. Project-level changes are controller-only.
 - Skipping the failing-test TDD step "because the code is obvious."
 - Marking Status: DONE if tests fail. DONE means tests pass.
+- **Leaving archaeology comments after a refactor.** Highest-priority antipattern in this repo. See Code style section above. If your final commit contains a single `# X removed`, `# moved from`, `# (was: ...)` line, the report is invalid — fix and recommit.

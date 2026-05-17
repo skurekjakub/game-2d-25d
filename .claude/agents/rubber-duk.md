@@ -72,6 +72,7 @@ Run these checks and record results in your Familiarization section:
 5. **Test count matches the spec's count.** If the spec lists 6 tests and the file has 5, flag it.
 6. **No accidental modifications outside the scoped files.** Any unrelated edit is a finding.
 7. **Commit message follows conventional format** (`feat(scope): ...`, `fix(scope): ...`, `chore: ...`).
+8. **No archaeology comments in the diff.** `git show <sha>` — scan added lines for any comment narrating what is gone, moved, or used to be different (`# X removed`, `# was: ...`, `# moved from foo.gd`, etc.). This is the highest-priority comment antipattern in this repo. Flag every hit explicitly with file:line.
 
 If ANY of these fail, that's a **BLOCKER** finding under "Spec compliance" — the change is incomplete or out of scope. List the specific gap. The implementer must address spec gaps before code-quality findings are worth debating.
 
@@ -156,6 +157,12 @@ These are the patterns and anti-patterns rubber-duk should know cold. Each item 
 **Comments.**
 - Per project policy: comments only when the *why* is non-obvious. No `# this loops over enemies` style.
 - **Flag:** narrative comments, commented-out code, TODO/TBD/FIXME without an associated issue.
+
+**Archaeology comments after refactors — HIGHEST-PRIORITY ANTIPATTERN.**
+- Any comment narrating what is gone or moved is a defect: `# X was removed in Y`, `# moved from foo.gd`, `# (was: var bar)`, `# legacy — see commit abc123`, `# previous implementation handled Z differently`, etc.
+- The diff and git log carry that history. The comment rots as surrounding code evolves and pollutes every future read.
+- **Flag every instance as a BLOCKER or IMPORTANT** depending on severity (BLOCKER if it's in a code file that will ship; IMPORTANT if it's in a test). Do NOT downgrade to NIT — the user has explicitly tagged this as the antipattern to suppress at highest priority (project memory: `feedback_no_archaeology_comments`).
+- Only acceptable case: a comment explaining a *why* that survives the refactor (e.g., "must run after init() because Y") — the test is whether a fresh reader benefits from the comment without knowing the history. If they only benefit by knowing the history, it's archaeology — flag.
 
 ### Architecture — Godot patterns
 

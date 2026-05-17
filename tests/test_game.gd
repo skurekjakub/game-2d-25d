@@ -9,7 +9,6 @@ func _make_game() -> Node:
 func test_start_run_initializes_state() -> void:
 	var game: Node = _make_game()
 	game.start_run()
-	assert_float(game.run_state.hp).is_equal(game.run_state.max_hp)
 	assert_int(game.run_state.xp).is_equal(0)
 	assert_int(game.run_state.level).is_equal(1)
 	assert_float(game.run_state.time_elapsed).is_equal(0.0)

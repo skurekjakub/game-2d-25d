@@ -34,8 +34,8 @@ func test_add_xp_at_threshold_levels_up() -> void:
 func test_add_xp_overflow_carries_but_level_advances_at_most_once() -> void:
 	var game: Node = _make_game()
 	game.start_run()
-	# xp_needed(1) = 8. Picking up 20 XP at level 1 used to stamp 2 levels.
-	# Now: level advances to 2, carry = 12. Second level requires upgrade_applied.
+	# xp_needed(1) = 8; 20 XP advances level exactly once with carry = 12.
+	# Subsequent levels require an upgrade_applied to drive _maybe_emit_level_up.
 	game.add_xp(20)
 	assert_int(game.run_state.level).is_equal(2)
 	assert_int(game.run_state.xp).is_equal(12)

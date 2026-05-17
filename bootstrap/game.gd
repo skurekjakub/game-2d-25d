@@ -38,6 +38,8 @@ func xp_needed(for_level: int) -> int:
 
 
 func add_xp(amount: int) -> void:
+	if run_state == null or run_state.is_over:
+		return
 	run_state.xp += amount
 	EventBus.xp_gained.emit(amount)
 	_maybe_emit_level_up()

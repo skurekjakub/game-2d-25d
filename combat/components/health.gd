@@ -23,6 +23,7 @@ func set_max_hp(value: float) -> void:
 
 
 func set_hp(value: float) -> void:
+	# Clamps to [0, max_hp]. Callers wanting overheal must extend max_hp first.
 	hp = clamp(value, 0.0, max_hp)
 	hp_changed.emit(hp)
 

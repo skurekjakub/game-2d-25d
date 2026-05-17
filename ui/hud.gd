@@ -59,13 +59,12 @@ func _on_upgrade_applied(_upgrade: UpgradeData) -> void:
 
 
 func _apply_reset_state() -> void:
+	# Autoload order (project.godot) guarantees Game._ready ran before any
+	# Hud._ready, so run_state is always non-null here. Crash loudly if not.
 	modulate = Color.WHITE
 	_level_label.text = "Lv 1"
 	_xp_bar.value = 0.0
-	if Game.run_state != null:
-		_xp_bar.max_value = float(Game.xp_needed(1))
-	else:
-		_xp_bar.max_value = float(8)
+	_xp_bar.max_value = float(Game.xp_needed(1))
 	_hp_bar.max_value = 100.0
 	_hp_bar.value = 100.0
 	_timer_label.text = "00:00"

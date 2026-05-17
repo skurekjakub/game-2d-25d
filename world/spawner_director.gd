@@ -8,7 +8,6 @@ signal wave_ended
 
 const ENEMY_SCENE := preload("res://combat/enemies/enemy.tscn")
 const SPAWN_MARGIN: float = 64.0  # extra distance beyond the camera viewport diagonal
-const HEADLESS_SPAWN_RADIUS_FALLBACK_PX: float = 800.0  # used when get_viewport() returns null
 
 @export var schedule: SpawnSchedule
 # Node-typed @exports don't auto-resolve from NodePath in .tscn in Godot 4.6
@@ -131,10 +130,7 @@ func _player_position() -> Vector2:
 # Resolved from the current viewport rather than a Camera2D node, because the
 # camera lives under Player and we don't want SpawnerDirector to know about it.
 func _spawn_radius() -> float:
-	var vp := get_viewport()
-	if vp == null:
-		return HEADLESS_SPAWN_RADIUS_FALLBACK_PX
-	var rect: Rect2 = vp.get_visible_rect()
+	var rect: Rect2 = get_viewport().get_visible_rect()
 	# Account for zoom: zoomed-in (zoom > 1) means smaller visible world rect.
 	var zoom: Vector2 = _camera_zoom()
 	var world_w: float = rect.size.x / zoom.x

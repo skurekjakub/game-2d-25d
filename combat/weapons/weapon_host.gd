@@ -51,6 +51,6 @@ func _spawn_projectile(weapon: WeaponInstance, target: Node2D) -> void:
 	if projectile.has_method("set_target_position"):
 		projectile.set_target_position(target.global_position)
 	if "damage" in projectile:
-		projectile.damage = weapon.data.base_damage
+		projectile.damage = weapon.effective_damage()
 	# Projectiles live as siblings of the player (in the Arena), so they don't follow the player.
 	_shooter.get_parent().add_child(projectile)

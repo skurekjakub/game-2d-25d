@@ -2,11 +2,6 @@ extends Node
 
 const DATA_DIR: String = "res://combat/upgrades/data"
 const WEAPONS_DATA_DIR: String = "res://combat/weapons/data"
-const MAX_HP_BONUS: float = 20.0
-const MOVE_SPEED_MULTIPLIER: float = 1.15
-const SPREAD_DATA_PATH: String = "res://combat/weapons/data/spread.tres"
-const AURA_DATA_PATH: String = "res://combat/weapons/data/aura.tres"
-const ORBITAL_DATA_PATH: String = "res://combat/weapons/data/orbital.tres"
 
 var pool: Array[UpgradeData] = []
 var known_weapon_ids: Array[StringName] = []
@@ -119,38 +114,7 @@ func _pick_one_weighted(candidates: Array[UpgradeData]) -> UpgradeData:
 func apply(upgrade: UpgradeData, player: Player) -> void:
 	if upgrade == null or player == null:
 		return
-	var hc: HealthComponent = player.get_node_or_null("HealthComponent") as HealthComponent
-	match upgrade.id:
-		&"max_hp_20":
-			if hc != null:
-				hc.set_max_hp(hc.max_hp + MAX_HP_BONUS)
-				hc.set_hp(hc.max_hp)
-		&"move_speed_15":
-			player.speed *= MOVE_SPEED_MULTIPLIER
-		&"heal_to_full":
-			if hc != null:
-				hc.set_hp(hc.max_hp)
-		&"blaster_damage_25":
-			pass
-		&"blaster_fire_rate_30":
-			pass
-		&"spread_damage_25":
-			pass
-		&"spread_pellets_plus_1":
-			pass
-		&"acquire_spread":
-			player.weapon_host.add_weapon(load(SPREAD_DATA_PATH))
-		&"aura_damage_25":
-			pass
-		&"aura_radius_25":
-			pass
-		&"acquire_aura":
-			player.weapon_host.add_weapon(load(AURA_DATA_PATH))
-		&"orbital_damage_25":
-			pass
-		&"orbital_count_plus_1":
-			pass
-		&"acquire_orbital":
-			player.weapon_host.add_weapon(load(ORBITAL_DATA_PATH))
-		_:
-			push_warning("UpgradeRegistry: no apply() branch for id=%s" % upgrade.id)
+	if upgrade.effect == null:
+		push_warning("UpgradeRegistry: upgrade %s has no effect" % upgrade.id)
+		return
+	upgrade.effect.execute(player)

@@ -70,7 +70,7 @@ func test_apply_max_hp_20_increases_max_and_heals() -> void:
 	var r := _registry_with_pool([])
 	var player := await _make_player_with_hc(200.0, 100.0, 30.0)
 	var hc: HealthComponent = player.get_node("HealthComponent") as HealthComponent
-	r.apply(_make_upgrade(&"max_hp_20"), player)
+	r.apply(load("res://combat/upgrades/data/max_hp_20.tres") as UpgradeData, player)
 	assert_float(hc.max_hp).is_equal(120.0)
 	assert_float(hc.hp).is_equal(120.0)
 
@@ -78,7 +78,7 @@ func test_apply_max_hp_20_increases_max_and_heals() -> void:
 func test_apply_move_speed_15_scales_player_speed() -> void:
 	var r := _registry_with_pool([])
 	var player := await _make_player_with_hc(200.0, 100.0, 100.0)
-	r.apply(_make_upgrade(&"move_speed_15"), player)
+	r.apply(load("res://combat/upgrades/data/move_speed_15.tres") as UpgradeData, player)
 	assert_float(player.speed).is_equal_approx(230.0, 0.001)
 
 
@@ -86,17 +86,19 @@ func test_apply_heal_to_full_caps_at_max() -> void:
 	var r := _registry_with_pool([])
 	var player := await _make_player_with_hc(200.0, 100.0, 25.0)
 	var hc: HealthComponent = player.get_node("HealthComponent") as HealthComponent
-	r.apply(_make_upgrade(&"heal_to_full"), player)
+	r.apply(load("res://combat/upgrades/data/heal_to_full.tres") as UpgradeData, player)
 	assert_float(hc.hp).is_equal(100.0)
 	assert_float(hc.max_hp).is_equal(100.0)
 
 
 func test_apply_weapon_upgrade_is_noop_at_apply_time() -> void:
+	# Mechanical per-weapon upgrades carry NoopEffect; behavior happens lazily at
+	# fire time via WeaponInstance.effective_*. Apply must NOT mutate player state.
 	var r := _registry_with_pool([])
 	var player := await _make_player_with_hc(200.0, 100.0, 100.0)
 	var hc: HealthComponent = player.get_node("HealthComponent") as HealthComponent
-	r.apply(_make_upgrade(&"blaster_damage_25"), player)
-	r.apply(_make_upgrade(&"blaster_fire_rate_30"), player)
+	r.apply(load("res://combat/upgrades/data/blaster_damage_25.tres") as UpgradeData, player)
+	r.apply(load("res://combat/upgrades/data/blaster_fire_rate_30.tres") as UpgradeData, player)
 	assert_float(hc.max_hp).is_equal(100.0)
 	assert_float(hc.hp).is_equal(100.0)
 	assert_float(player.speed).is_equal(200.0)
@@ -150,13 +152,28 @@ func test_known_weapon_ids_derives_from_weapon_data_dir() -> void:
 		assert_bool(expected in r.known_weapon_ids).is_true()
 
 
+func test_every_upgrade_tres_has_effect() -> void:
+	# Every UpgradeData on disk must carry a non-null effect — guarantees the
+	# Strategy dispatch in apply() can delegate without push_warning fallthrough.
+	const DATA_DIR: String = "res://combat/upgrades/data"
+	for entry: String in ResourceLoader.list_directory(DATA_DIR):
+		if not (entry.ends_with(".tres") or entry.ends_with(".res")):
+			continue
+		var u := load("%s/%s" % [DATA_DIR, entry]) as UpgradeData
+		assert_object(u.effect).append_failure_message("%s has null effect" % entry).is_not_null()
+
+
 func test_apply_acquire_aura_adds_weapon_to_host() -> void:
 	var player: Player = await TestWorld.player_with_weapons(self, [])
-	UpgradeRegistry.apply(_make_upgrade(&"acquire_aura"), player)
+	UpgradeRegistry.apply(
+		load("res://combat/upgrades/data/acquire_aura.tres") as UpgradeData, player
+	)
 	assert_bool(StringName("aura") in player.weapon_host.owned_weapon_ids()).is_true()
 
 
 func test_apply_acquire_orbital_adds_weapon_to_host() -> void:
 	var player: Player = await TestWorld.player_with_weapons(self, [])
-	UpgradeRegistry.apply(_make_upgrade(&"acquire_orbital"), player)
+	UpgradeRegistry.apply(
+		load("res://combat/upgrades/data/acquire_orbital.tres") as UpgradeData, player
+	)
 	assert_bool(StringName("orbital") in player.weapon_host.owned_weapon_ids()).is_true()

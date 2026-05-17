@@ -21,7 +21,7 @@ func test_spread_data_uses_basic_projectile_scene() -> void:
 
 func test_acquire_spread_adds_weapon_to_host() -> void:
 	var player: Player = await TestWorld.player_with_weapons(self, [])
-	var u := UpgradeData.new()
-	u.id = &"acquire_spread"
-	UpgradeRegistry.apply(u, player)
+	UpgradeRegistry.apply(
+		load("res://combat/upgrades/data/acquire_spread.tres") as UpgradeData, player
+	)
 	assert_bool(StringName("spread") in player.weapon_host.owned_weapon_ids()).is_true()

@@ -36,7 +36,8 @@ func _try_fire(weapon: WeaponInstance) -> void:
 	# does its own `is Node2D` filter. See M1.1 Task 6 rubber-duk notes.
 	var enemies := get_tree().get_nodes_in_group("enemies")
 	var target := WeaponInstance.find_nearest_target(
-		_shooter.global_position, enemies, weapon.data.range)
+		_shooter.global_position, enemies, weapon.data.range
+	)
 	if target == null:
 		return
 	_spawn_projectile(weapon, target)

@@ -25,7 +25,8 @@ func _physics_process(_delta: float) -> void:
 	if movement.target == null:
 		return
 	velocity = WalkTowardPlayerComponent.compute_velocity(
-		global_position, movement.target.global_position, movement.speed)
+		global_position, movement.target.global_position, movement.speed
+	)
 	move_and_slide()
 
 

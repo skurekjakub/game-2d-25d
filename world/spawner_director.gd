@@ -7,7 +7,7 @@ signal phase_advanced(phase_idx: int)
 signal wave_ended
 
 const ENEMY_SCENE := preload("res://combat/enemies/enemy.tscn")
-const SPAWN_MARGIN: float = 64.0   # extra distance beyond the camera viewport diagonal
+const SPAWN_MARGIN: float = 64.0  # extra distance beyond the camera viewport diagonal
 
 @export var schedule: SpawnSchedule
 # Node-typed @exports don't auto-resolve from NodePath in .tscn in Godot 4.6
@@ -59,8 +59,8 @@ static func compute_spawn_position(player_pos: Vector2, radius: float, angle_rad
 # Used when the off-camera ring would land outside the playable arena.
 static func clamp_spawn_to_bounds(pos: Vector2, bounds: Rect2) -> Vector2:
 	return Vector2(
-		clamp(pos.x, bounds.position.x, bounds.end.x),
-		clamp(pos.y, bounds.position.y, bounds.end.y))
+		clamp(pos.x, bounds.position.x, bounds.end.x), clamp(pos.y, bounds.position.y, bounds.end.y)
+	)
 
 
 func accumulate_budget(delta: float, rate_per_sec: float) -> void:
@@ -81,7 +81,11 @@ func _on_time_advanced(time_elapsed: float) -> void:
 		phase_advanced.emit(idx)
 		if is_inside_tree():
 			EventBus.spawn_phase_changed.emit(idx)
-	if idx < 0 and not _wave_ended_emitted and time_elapsed >= float(schedule.total_duration_seconds()):
+	if (
+		idx < 0
+		and not _wave_ended_emitted
+		and time_elapsed >= float(schedule.total_duration_seconds())
+	):
 		_wave_ended_emitted = true
 		wave_ended.emit()
 		if is_inside_tree():
@@ -125,7 +129,7 @@ func _player_position() -> Vector2:
 func _spawn_radius() -> float:
 	var vp := get_viewport()
 	if vp == null:
-		return 800.0   # safe headless fallback
+		return 800.0  # safe headless fallback
 	var rect: Rect2 = vp.get_visible_rect()
 	# Account for zoom: zoomed-in (zoom > 1) means smaller visible world rect.
 	var zoom: Vector2 = _camera_zoom()

@@ -5,7 +5,10 @@ const RE_HIT_COOLDOWN_SEC: float = 0.5
 
 var damage: float = 5.0
 
-# Per-enemy re-hit cooldown table, keyed by enemy instance_id.
+# Per-enemy re-hit cooldown table, keyed by enemy instance_id. Per-blade (not
+# per-weapon) by design: more blades = more hit opportunities on the same enemy
+# during the cooldown window. instance_ids are not reused in Godot 4.x within
+# a session (validator counter), so freed enemies can't inherit stale cooldowns.
 var _hit_cooldowns: Dictionary = {}
 
 

@@ -21,7 +21,7 @@ func test_panel_shows_all_weapons_on_run_ended() -> void:
 	Game.end_run(false)
 	await get_tree().process_frame
 	assert_bool(panel.visible).is_true()
-	var list: VBoxContainer = panel.get_node("List")
+	var list: VBoxContainer = panel.get_node("Body/List")
 	assert_int(list.get_child_count()).is_equal(2)
 
 
@@ -32,5 +32,5 @@ func test_panel_displays_totals() -> void:
 	await get_tree().process_frame
 	Game.end_run(true)
 	await get_tree().process_frame
-	var total_label: Label = panel.get_node("Header/TotalLabel")
+	var total_label: Label = panel.get_node("Body/Header/TotalLabel")
 	assert_str(total_label.text).contains("500")

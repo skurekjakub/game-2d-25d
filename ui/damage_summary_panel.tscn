@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://ui/damage_summary_panel.gd" id="1_panel"]
 
-[node name="DamageSummaryPanel" type="VBoxContainer"]
+[node name="DamageSummaryPanel" type="PanelContainer"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -13,21 +13,23 @@ offset_right = 240.0
 offset_bottom = 210.0
 script = ExtResource("1_panel")
 
-[node name="Title" type="Label" parent="."]
+[node name="Body" type="VBoxContainer" parent="."]
+
+[node name="Title" type="Label" parent="Body"]
 text = "Damage Breakdown"
 horizontal_alignment = 1
 
-[node name="Header" type="VBoxContainer" parent="."]
+[node name="Header" type="VBoxContainer" parent="Body"]
 
-[node name="TotalLabel" type="Label" parent="Header"]
+[node name="TotalLabel" type="Label" parent="Body/Header"]
 text = "TOTAL DAMAGE  0"
 
-[node name="DurationLabel" type="Label" parent="Header"]
+[node name="DurationLabel" type="Label" parent="Body/Header"]
 text = "RUN DURATION  0:00"
 
-[node name="DpsLabel" type="Label" parent="Header"]
+[node name="DpsLabel" type="Label" parent="Body/Header"]
 text = "AVERAGE DPS  0"
 
-[node name="Separator" type="HSeparator" parent="."]
+[node name="Separator" type="HSeparator" parent="Body"]
 
-[node name="List" type="VBoxContainer" parent="."]
+[node name="List" type="VBoxContainer" parent="Body"]

@@ -1,13 +1,13 @@
 # Observer subscriber: paints once on EventBus.run_ended.
 class_name DamageSummaryPanel
-extends VBoxContainer
+extends PanelContainer
 
 const ROW_SCENE: PackedScene = preload("res://ui/damage_meter_row.tscn")
 
-@onready var _list: VBoxContainer = $List
-@onready var _total_label: Label = $Header/TotalLabel
-@onready var _duration_label: Label = $Header/DurationLabel
-@onready var _dps_label: Label = $Header/DpsLabel
+@onready var _list: VBoxContainer = $Body/List
+@onready var _total_label: Label = $Body/Header/TotalLabel
+@onready var _duration_label: Label = $Body/Header/DurationLabel
+@onready var _dps_label: Label = $Body/Header/DpsLabel
 
 
 func _ready() -> void:

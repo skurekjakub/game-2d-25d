@@ -15,3 +15,7 @@ func test_compact_millions_renders_m() -> void:
 
 func test_compact_zero() -> void:
 	assert_str(NumberFormat.compact(0.0)).is_equal("0")
+
+
+func test_compact_999_999_promotes_to_one_megs() -> void:
+	assert_str(NumberFormat.compact(999_999.0)).is_equal("1.0M")

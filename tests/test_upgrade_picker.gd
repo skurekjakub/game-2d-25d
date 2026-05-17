@@ -41,5 +41,30 @@ func test_apply_unpauses_tree() -> void:
 	get_tree().paused = true
 	var picker := _make_picker()
 	picker._apply_pick(_make_upgrade(&"heal_to_full"))
-	# Level-up drain may re-pause if there's another pending. With no XP, no re-pause.
+	# With no pending XP, the drain chain doesn't re-pause.
 	assert_bool(get_tree().paused).is_false()
+
+
+func test_apply_pick_chains_into_next_modal_when_level_pending() -> void:
+	# Multi-level invariant from design §"Data flow on level-up":
+	# back-to-back picks must drain queued level_ups synchronously after the
+	# emit, opening modal B without the player losing an upgrade.
+	#
+	# Requires UpgradeRegistry pool to be non-empty (autoload _ready loads it)
+	# and a "player" group node so the chained _on_level_up's dead-check passes.
+	var picker := _make_picker()
+	var player_stub: Node = auto_free(Node.new())
+	player_stub.add_to_group("player")
+	add_child(player_stub)
+	# Pre-seed XP to cross the next threshold on the drain.
+	Game.run_state.xp = Game.xp_needed(Game.run_state.level)
+	monitor_signals(EventBus, false)
+	picker._apply_pick(_make_upgrade(&"max_hp_20"))
+	await assert_signal(EventBus).is_emitted("level_up", [Game.run_state.level])
+	# Modal B should be open (and the tree paused again).
+	assert_object(picker._modal).is_not_null()
+	assert_bool(get_tree().paused).is_true()
+	# Cleanup: free the modal so subsequent tests start clean.
+	if picker._modal != null:
+		picker._modal.queue_free()
+	get_tree().paused = false

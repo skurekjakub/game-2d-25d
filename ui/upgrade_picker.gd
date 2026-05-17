@@ -29,9 +29,14 @@ func _apply_pick(upgrade: UpgradeData) -> void:
 	var player: Node = players[0] if not players.is_empty() else null
 	UpgradeRegistry.apply(upgrade, player)
 	Game.run_state.upgrades_taken.append(upgrade)
-	EventBus.upgrade_applied.emit(upgrade)
+	# Clear modal ref + unpause BEFORE emitting. The emit synchronously chains
+	# into Game._maybe_emit_level_up, which may re-emit `level_up` and re-enter
+	# _on_level_up. If that re-entry sees a stale `_modal`, the queued modal is
+	# silently dropped (and is_instance_valid stays true on a same-frame
+	# queue_free'd node — Godot issue #99239).
 	_modal = null
 	get_tree().paused = false
+	EventBus.upgrade_applied.emit(upgrade)
 
 
 func _player_is_dead() -> bool:

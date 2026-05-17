@@ -8,12 +8,14 @@ const UPGRADE_CARD_SCENE := preload("res://ui/upgrade_card.tscn")
 @onready var _card_row: HBoxContainer = $Center/Panel/Margin/CardRow
 
 var _cards: Array[UpgradeCard] = []
+var _options: Array[UpgradeData] = []
 
 
 func show_options(options: Array[UpgradeData]) -> void:
 	for child in _card_row.get_children():
 		child.queue_free()
 	_cards.clear()
+	_options = options
 	for upgrade in options:
 		var card: UpgradeCard = UPGRADE_CARD_SCENE.instantiate()
 		_card_row.add_child(card)
@@ -44,7 +46,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 			index = 1
 		KEY_3:
 			index = 2
-	if index < 0 or index >= _cards.size():
+	if index < 0 or index >= _options.size():
 		return
 	accept_event()
-	_on_card_picked(_cards[index]._upgrade)
+	_on_card_picked(_options[index])

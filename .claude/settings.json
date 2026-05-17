@@ -11,7 +11,7 @@
           },
           {
             "type": "command",
-            "command": "CLAUDE_PLUGIN_ROOT=\"${CLAUDE_PROJECT_DIR}/.claude\" \"${CLAUDE_PROJECT_DIR}/.claude/hooks/run-hook.cmd\" project-context",
+            "command": "CLAUDE_PLUGIN_ROOT=\"${CLAUDE_PROJECT_DIR}/.claude\" \"${CLAUDE_PROJECT_DIR}/.claude/giga-hooks/run-hook.cmd\" project-context",
             "async": false
           }
         ]
@@ -23,12 +23,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PROJECT_DIR}/.claude/hooks/run-hook.cmd\" block-destructive-bash",
+            "command": "\"${CLAUDE_PROJECT_DIR}/.claude/giga-hooks/run-hook.cmd\" block-destructive-bash",
             "async": false
           },
           {
             "type": "command",
-            "command": "\"${CLAUDE_PROJECT_DIR}/.claude/hooks/run-hook.cmd\" stage-uid-sidecars",
+            "command": "\"${CLAUDE_PROJECT_DIR}/.claude/giga-hooks/run-hook.cmd\" stage-godot-uid-sidecars",
             "async": false
           }
         ]
@@ -40,7 +40,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PROJECT_DIR}/.claude/hooks/run-hook.cmd\" gdformat-on-edit",
+            "command": "\"${CLAUDE_PROJECT_DIR}/.claude/giga-hooks/run-hook.cmd\" gdformat-on-edit",
             "async": false
           }
         ]
@@ -51,7 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PROJECT_DIR}/.claude/hooks/run-hook.cmd\" notify-done",
+            "command": "\"${CLAUDE_PROJECT_DIR}/.claude/giga-hooks/run-hook.cmd\" notify-done",
             "async": true
           }
         ]

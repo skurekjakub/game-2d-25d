@@ -4,6 +4,7 @@ const DATA_DIR: String = "res://combat/upgrades/data"
 const MAX_HP_BONUS: float = 20.0
 const MOVE_SPEED_MULTIPLIER: float = 1.15
 const SPREAD_DATA_PATH: String = "res://combat/weapons/data/spread.tres"
+const AURA_DATA_PATH: String = "res://combat/weapons/data/aura.tres"
 
 var pool: Array[UpgradeData] = []
 
@@ -84,5 +85,13 @@ func apply(upgrade: UpgradeData, player: Node) -> void:
 			var host := player.get_node_or_null("WeaponHost") as WeaponHost
 			if host != null:
 				host.add_weapon(load(SPREAD_DATA_PATH))
+		&"aura_damage_25":
+			pass
+		&"aura_radius_25":
+			pass
+		&"acquire_aura":
+			var host := player.get_node_or_null("WeaponHost") as WeaponHost
+			if host != null:
+				host.add_weapon(load(AURA_DATA_PATH))
 		_:
 			push_warning("UpgradeRegistry: no apply() branch for id=%s" % upgrade.id)

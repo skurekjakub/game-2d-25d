@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://combat/weapons/weapon_data.gd" id="1_weapondata"]
+[ext_resource type="PackedScene" path="res://combat/weapons/aura/aura_weapon.tscn" id="2_aura_scene"]
+
+[resource]
+script = ExtResource("1_weapondata")
+id = &"aura"
+display_name = "Aura"
+base_damage = 4.0
+fire_rate = 0.0
+range = 0.0
+targeting = 0
+weapon_scene = ExtResource("2_aura_scene")

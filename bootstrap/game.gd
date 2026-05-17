@@ -39,10 +39,18 @@ func xp_needed(for_level: int) -> int:
 func add_xp(amount: int) -> void:
 	run_state.xp += amount
 	EventBus.xp_gained.emit(amount)
-	while run_state.xp >= xp_needed(run_state.level):
-		run_state.xp -= xp_needed(run_state.level)
-		run_state.level += 1
-		EventBus.level_up.emit(run_state.level)
+	_maybe_emit_level_up()
+
+
+func _maybe_emit_level_up() -> void:
+	if run_state == null or run_state.is_over:
+		return
+	var needed: int = xp_needed(run_state.level)
+	if run_state.xp < needed:
+		return
+	run_state.xp -= needed
+	run_state.level += 1
+	EventBus.level_up.emit(run_state.level)
 
 
 class RunState:

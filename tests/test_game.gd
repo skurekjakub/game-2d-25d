@@ -31,12 +31,35 @@ func test_add_xp_at_threshold_levels_up() -> void:
 	assert_int(game.run_state.xp).is_equal(0)
 
 
-func test_add_xp_overflow_carries_to_next_level() -> void:
+func test_add_xp_overflow_carries_but_level_advances_at_most_once() -> void:
 	var game: Node = _make_game()
 	game.start_run()
-	game.add_xp(10)  # 8 to level up, 2 carry
+	# xp_needed(1) = 8. Picking up 20 XP at level 1 used to stamp 2 levels.
+	# Now: level advances to 2, carry = 12. Second level requires upgrade_applied.
+	game.add_xp(20)
 	assert_int(game.run_state.level).is_equal(2)
-	assert_int(game.run_state.xp).is_equal(2)
+	assert_int(game.run_state.xp).is_equal(12)
+
+
+func test_maybe_emit_level_up_emits_once_when_threshold_crossed() -> void:
+	var game: Node = _make_game()
+	game.start_run()
+	monitor_signals(EventBus, false)
+	game.add_xp(8)  # exactly xp_needed(1)
+	await assert_signal(EventBus).is_emitted("level_up", [2])
+	await assert_signal(EventBus).wait_until(200).is_not_emitted("level_up", [3])
+
+
+func test_maybe_emit_level_up_drains_next_level_when_called_again() -> void:
+	var game: Node = _make_game()
+	game.start_run()
+	# Stockpile enough XP for 2 levels: need(1)=8 + need(2)=11 = 19
+	game.add_xp(19)
+	# First call already drained one level (handled inside add_xp).
+	assert_int(game.run_state.level).is_equal(2)
+	# Now simulate the upgrade-applied callback re-draining.
+	game._maybe_emit_level_up()
+	assert_int(game.run_state.level).is_equal(3)
 
 
 func test_xp_needed_curve() -> void:

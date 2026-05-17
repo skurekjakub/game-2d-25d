@@ -12,6 +12,7 @@ const FLASH_DURATION_SEC := 0.1
 
 var _is_dead: bool = false
 var _base_color: Color
+var _flash_tween: Tween
 
 
 func _ready() -> void:
@@ -47,12 +48,13 @@ func _on_died(_killer: Node) -> void:
 	_is_dead = true
 	velocity = Vector2.ZERO
 	set_physics_process(false)
-	_weapon_host.set_process(false)
 	_weapon_host.set_physics_process(false)
 	EventBus.run_ended.emit(false)
 
 
 func _flash() -> void:
+	if _flash_tween and _flash_tween.is_valid():
+		_flash_tween.kill()
 	_visual.color = FLASH_COLOR
-	var tween := create_tween()
-	tween.tween_property(_visual, "color", _base_color, FLASH_DURATION_SEC)
+	_flash_tween = create_tween()
+	_flash_tween.tween_property(_visual, "color", _base_color, FLASH_DURATION_SEC)

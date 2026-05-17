@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/upgrade_card.gd" id="1_card"]
+
+[node name="UpgradeCard" type="Button"]
+script = ExtResource("1_card")
+custom_minimum_size = Vector2(220, 160)
+focus_mode = 2
+mouse_filter = 0
+
+[node name="VBox" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="VBox"]
+text = "Title"
+horizontal_alignment = 1
+mouse_filter = 2
+
+[node name="Description" type="Label" parent="VBox"]
+text = "Description"
+autowrap_mode = 2
+mouse_filter = 2

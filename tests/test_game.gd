@@ -45,3 +45,13 @@ func test_xp_needed_curve() -> void:
 	assert_int(game.xp_needed(1)).is_equal(8)
 	assert_int(game.xp_needed(2)).is_equal(11)
 	assert_int(game.xp_needed(10)).is_equal(35)
+
+
+func test_time_elapsed_advances_when_process_ticks() -> void:
+	# Game is an autoload, so just probe Game directly — but we can also
+	# construct a fresh instance to test process behavior in isolation.
+	var g: Node = auto_free(load("res://bootstrap/game.gd").new())
+	g.start_run()
+	var initial: float = g.run_state.time_elapsed
+	g._process(0.5)
+	assert_float(g.run_state.time_elapsed).is_equal_approx(initial + 0.5, 0.001)

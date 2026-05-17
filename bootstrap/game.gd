@@ -7,6 +7,11 @@ func _ready() -> void:
 	run_state = RunState.new()
 
 
+func _process(delta: float) -> void:
+	if run_state != null:
+		run_state.time_elapsed += delta
+
+
 func start_run() -> void:
 	run_state = RunState.new()
 	run_state.max_hp = 100.0

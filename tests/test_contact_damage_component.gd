@@ -76,7 +76,7 @@ func test_non_damageable_body_ignored() -> void:
 	var bare_body: Node = auto_free(Node.new())
 	c._on_body_entered(bare_body)
 	c._process(2.0)
-	assert_bool(true).is_true()
+	assert_int(c._timers.size()).is_equal(0)
 
 
 func test_freed_body_does_not_crash_tick() -> void:
@@ -85,4 +85,4 @@ func test_freed_body_does_not_crash_tick() -> void:
 	c._on_body_entered(body)
 	body.free()
 	c._process(2.0)
-	assert_bool(true).is_true()
+	assert_int(c._timers.size()).is_equal(0)

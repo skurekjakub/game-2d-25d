@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_upgrade_data")
-id = &"fire_rate_30"
-display_name = "+30% Fire Rate"
-description = "Pull the trigger faster."
+id = &"blaster_damage_25"
+display_name = "+25% Blaster Damage"
+description = "Blaster shots hit 25% harder."
 weight = 1.0

@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/damage_summary_panel.gd" id="1_panel"]
+
+[node name="DamageSummaryPanel" type="VBoxContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -210.0
+offset_right = 240.0
+offset_bottom = 210.0
+script = ExtResource("1_panel")
+
+[node name="Title" type="Label" parent="."]
+text = "Damage Breakdown"
+horizontal_alignment = 1
+
+[node name="Header" type="VBoxContainer" parent="."]
+
+[node name="TotalLabel" type="Label" parent="Header"]
+text = "TOTAL DAMAGE  0"
+
+[node name="DurationLabel" type="Label" parent="Header"]
+text = "RUN DURATION  0:00"
+
+[node name="DpsLabel" type="Label" parent="Header"]
+text = "AVERAGE DPS  0"
+
+[node name="Separator" type="HSeparator" parent="."]
+
+[node name="List" type="VBoxContainer" parent="."]

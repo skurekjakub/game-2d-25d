@@ -137,3 +137,19 @@ func test_on_upgrade_applied_drains_pending_level() -> void:
 	# Pass null because _on_upgrade_applied ignores the payload.
 	game._on_upgrade_applied(null)
 	assert_int(game.run_state.level).is_equal(3)
+
+
+func test_start_run_resets_stats() -> void:
+	Game.start_run()
+	Game.run_state.stats.add_damage(&"blaster", 50.0)
+	assert_float(Game.run_state.stats.total_damage()).is_equal(50.0)
+	Game.start_run()
+	assert_float(Game.run_state.stats.total_damage()).is_equal(0.0)
+
+
+func test_end_run_marks_stats_ended() -> void:
+	Game.start_run()
+	var stats: RunStats = Game.run_state.stats
+	assert_float(stats.run_ended_at).is_equal(0.0)
+	Game.end_run(false)
+	assert_float(stats.run_ended_at).is_greater_equal(0.0)

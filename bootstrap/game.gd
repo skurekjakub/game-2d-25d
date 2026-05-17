@@ -16,11 +16,7 @@ func _process(delta: float) -> void:
 
 func start_run() -> void:
 	run_state = RunState.new()
-	run_state.xp = 0
-	run_state.level = 1
-	run_state.time_elapsed = 0.0
-	run_state.upgrades_taken = []
-	run_state.is_over = false
+	run_state.stats.mark_run_started(0.0)
 	_run_ended_emitted = false
 	EventBus.run_started.emit()
 
@@ -30,6 +26,7 @@ func end_run(victory: bool) -> void:
 		return
 	_run_ended_emitted = true
 	run_state.is_over = true
+	run_state.stats.mark_run_ended(run_state.time_elapsed)
 	EventBus.run_ended.emit(victory)
 
 
@@ -61,8 +58,9 @@ func _maybe_emit_level_up() -> void:
 
 
 class RunState:
-	var xp: int
-	var level: int
-	var time_elapsed: float
+	var xp: int = 0
+	var level: int = 1
+	var time_elapsed: float = 0.0
 	var upgrades_taken: Array[UpgradeData] = []
 	var is_over: bool = false
+	var stats: RunStats = RunStats.new()
